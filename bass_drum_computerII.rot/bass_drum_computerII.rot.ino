@@ -173,24 +173,14 @@ void setup() {
 //  VSWriteRegister(0x1e03, 0, 0xff);
   talkMIDI(0xB9, 0, 0x7F);  //Bank select drums. midi cannel 10
   talkMIDI(0xB9, 0x07, Vol3);//0x07 is channel message, set channel volume to near max (127)
-//  talkMIDI(0xB9, 0x79, 0);
-//  talkMIDI(0xB9, 0x58, 127);
-//  talkMIDI(0xB9, 0x0c, 0);  
 
   talkMIDI(0xB0, 0, 0x00); //Default bank GM1
   talkMIDI(0xC0, soundPatch, 0); //Set instrument number. 0xC0 is a 1 data byte command
   talkMIDI(0xB0, 0x07, Vol2);//0x07 is channel message, set channel volume to near max (127)
-//  talkMIDI(0xB0, 0x06, 127);
-//  talkMIDI(0xB0, 0x79, 0);
-//  talkMIDI(0xB0, 0x58, 0);
-//  talkMIDI(0xB0, 0x0c, 0);
 
   talkMIDI(0xB1, 0, 0x00); //Default bank GM1
   talkMIDI(0xC1, leadPatch, 0); //Set instrument number. 0xC0 is a 1 data byte command
   talkMIDI(0xB1, 0x07, Vol1);//0x07 is channel message, set channel volume to near max (127)
-//  talkMIDI(0xB1, 0x79, 0);
-//  talkMIDI(0xB1, 0x58, 0);
-//  talkMIDI(0xB1, 0x0c, 0);
 
   //  Serial.begin(9600); //Use serial for debugging
   //  Serial.println("VS1053 Shield Example");
