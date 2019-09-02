@@ -34,6 +34,7 @@ and the SdFat we must change the SdFatConfig.h
 to
 
 #define ENABLE_SOFTWARE_SPI_CLASS 1
+
 Wiring
 
 for the vs1053:
