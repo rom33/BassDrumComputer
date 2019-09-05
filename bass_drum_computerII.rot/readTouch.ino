@@ -288,7 +288,7 @@ if(rotMode3 == 2){
    }
         if(rotMode1 == 1){
         reverb1 = Value(reverb1+val);
-//        talkMIDI(0xB1, 0x58, 0xff);
+        talkMIDI(0xB1, 0x5b, reverb1);
 //        talkMIDI(0xB1, 0x0c, reverb1);
         tft.setCursor(455,128);
         Format(reverb1);
@@ -319,7 +319,7 @@ if(rotMode3 == 2){
         if(rotMode2 ==  1){
         reverb2 = Value(reverb2+val);
 //        talkMIDI(0xE0, reverb1, reverb2);
-//        talkMIDI(0xB0, 0x58, 0xff);        
+        talkMIDI(0xB0, 0x5b, reverb2);        
 //        talkMIDI(0xB0, 0x0c, reverb2);
         tft.setCursor(455,88);
         Format(reverb2);
@@ -349,7 +349,7 @@ if(rotMode3 == 2){
    }
         if(rotMode3 == 1){
         reverb3 = Value(reverb3+val);
-//        talkMIDI(0xB9, 0x58, 0xff);
+        talkMIDI(0xB9, 0x5b, reverb3);
 //        talkMIDI(0xB9, 0x0c, reverb3);
         tft.setCursor(455,48);
         Format(reverb3);

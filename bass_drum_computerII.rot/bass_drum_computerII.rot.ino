@@ -57,7 +57,7 @@ const int DT3 = 32;
 int lastPosition1, currentPosition1;
 int lastPosition2, currentPosition2;
 int lastPosition3, currentPosition3;
-int reverb1,reverb2,reverb3;
+int reverb1 =12 ,reverb2 = 12,reverb3 = 12;
 int pan1=64,pan2=64,pan3=64;
 int potRead1,potRead2,potRead3,val;
 bool pressed = false;
@@ -358,6 +358,19 @@ void drawRaster() {
   tft.drawRect(320,127,129,8,TFT_WHITE);
   tft.fillRect(320,137,129,8,TFT_WHITE);
 
+  tft.setCursor(455,128);
+  Format(reverb1);
+  tft.print(reverb1);
+  DrawValue(reverb1,128);
+  tft.setCursor(455,88);
+  Format(reverb2);
+  tft.print(reverb2);
+  DrawValue(reverb2,88);
+  tft.setCursor(455,48);
+  Format(reverb3);
+  tft.print(reverb3);
+  DrawValue(reverb3,48);  
+
   tft.setCursor(455,38);
   Format(Vol3);
   tft.print(Vol3);
@@ -489,17 +502,17 @@ void playNotes() {
         if (pat < 8) {
           channel = 9;
           note = patch[slope];
-          talkMIDI(0xB0, 0x0c, reverb3);
+//          talkMIDI(0xB0, 0x0c, reverb3);
           }
         else if (pat > 7 && pat < 12) {
           channel = 0;
           note =bass[slope];
-          talkMIDI(0xB0, 0x0c, reverb2);
+//          talkMIDI(0xB0, 0x0c, reverb2);
         }else
         {
           channel = 1;
           note = bass[slope]+12;
-          talkMIDI(0xB0, 0x0c, reverb1);
+//          talkMIDI(0xB0, 0x0c, reverb1);
         }
           noteOn(channel, note, 40 + (((instrument[12][pat] >> tick) & (1)) * 20));
         }
@@ -524,17 +537,17 @@ void playNotes() {
             if (slope2 < 8) {
               channel = 9;
               note = patch[slope];
-              talkMIDI(0xB0, 0x0c, reverb3);              
+//              talkMIDI(0xB0, 0x0c, reverb3);              
               }
             else if (slope2 > 7 && slope2 < 12) {
               channel = 0;
               note = bass[slope];
-              talkMIDI(0xB0, 0x0c, reverb2);
+//              talkMIDI(0xB0, 0x0c, reverb2);
             }
             else{
           channel = 1;
           note = bass[slope]+12;
-          talkMIDI(0xB0, 0x0c, reverb1);              
+//          talkMIDI(0xB0, 0x0c, reverb1);              
             }
             noteOn(channel, note, 40 + (((instrument[12][slope2] >> tick) & (1)) * 20));
           }
