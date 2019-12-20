@@ -1,6 +1,6 @@
 ////////////////////////////////////////////
 //    3.5" TOUCH SCREEN Bass & Drum       //
-//              Maschine                  //
+//              Machine                  //
 //                                        //
 //            rom3 08.2019                //
 //                                        //
@@ -45,11 +45,11 @@ TSPoint_kbv tp;
 
 File file;
 
-const int CLK1 = 22;  // CLK PIN des Drehreglers auf den digitalen PIN 3
+const int CLK1 = 22;  // CLK PIN rotary encoder
 const int rotButton1 = 23;
 const int rotButton2 = 25;
 const int rotButton3 = 27;
-const int DT1 = 24;  // DT PIN des Drehreglers auf den digitalen PIN 4
+const int DT1 = 24;  // DT PIN rotary encoder
 const int CLK2 = 26; 
 const int DT2 = 28;
 const int CLK3 = 30; 
@@ -65,7 +65,9 @@ int rotMode1,rotMode2,rotMode3;
 
 int rX[8], rY[8];
 unsigned short int x, y, xx, yy, tempo = 120, shift, inst, Vol1 = 100, Vol2= 100, Vol3 = 100, buff, soundPatch, leadPatch;
-unsigned short pattern[300], instrument[13][16], channel, bank, note;
+unsigned short pattern[300];
+unsigned long instrument[13][16];
+unsigned short channel, bank, note;
 unsigned short patch[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
 unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46};
 unsigned short slope, slope2, pat = 0, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
@@ -146,6 +148,11 @@ void setup() {
   pinMode(VS_XCS, OUTPUT);
   pinMode(VS_XDCS, OUTPUT);
   pinMode(VS_RESET, OUTPUT);
+
+  pinMode(A8, INPUT);
+  pinMode(A9, INPUT);
+  pinMode(A10, INPUT);
+  pinMode(A11, INPUT);  
   
   digitalWrite(VS_XCS, true); //Deselect Controltft.cursorToXY
   digitalWrite(VS_XDCS, true); //Deselect Data
@@ -170,7 +177,7 @@ void setup() {
   SPI.transfer(0xFF); //Throw a dummy byte at the bus  
 
   VSLoadUserCode();  
-//  VSWriteRegister(0x1e03, 0, 0xff);
+//  VSWriteRegister(0x1e03, 0xff, 0xff);
   talkMIDI(0xB9, 0, 0x7F);  //Bank select drums. midi cannel 10
   talkMIDI(0xB9, 0x07, Vol3);//0x07 is channel message, set channel volume to near max (127)
 
@@ -208,6 +215,12 @@ while(1){
   delay(250 * 60 / tempo);
   talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
   talkMIDI(0xB1, 0x7b, 127); //all notes channel 2 off
+  talkMIDI(0xB0, 0x0c, analogRead(A11)/8); // effect control 1 (sets global reverb decay)
+  talkMIDI(0xB0, 0x26, analogRead(A10)/8); // RPN LSB: 0 = bend range
+//  VSWriteRegister(0x1e03, analogRead(A9), 0);
+  VSWriteRegister(0x1e03, analogRead(A8)/8, analogRead(A9)/8);
+//  VSWriteRegister(0x0B, analogRead(A8)/16, analogRead(A9)/16); // Master Vol control left right
+//  VSWriteRegister(0x02, analogRead(A8)/16, analogRead(A9)/16);
 }
 }
 void DrawValuePan(int value,int height){
@@ -514,7 +527,7 @@ void playNotes() {
           note = bass[slope]+12;
 //          talkMIDI(0xB0, 0x0c, reverb1);
         }
-          noteOn(channel, note, 40 + (((instrument[12][pat] >> tick) & (1)) * 20));
+          noteOn(channel, note, 40 + (((instrument[12][pat] & (0x0f)>> tick) & (1)) * 20));
         }
     } return;
   }
@@ -549,7 +562,7 @@ void playNotes() {
           note = bass[slope]+12;
 //          talkMIDI(0xB0, 0x0c, reverb1);              
             }
-            noteOn(channel, note, 40 + (((instrument[12][slope2] >> tick) & (1)) * 20));
+            noteOn(channel, note, 40 + (((instrument[12][slope2] & (0x0f) >> tick) & (1)) * 20));
           }
         }
       }
