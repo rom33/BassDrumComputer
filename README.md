@@ -3,7 +3,7 @@ A simple sequencer for Arduino Due with 3.5" 8-bit tft-display(e.g.MCUfriends) a
 
 Needed libraries:
 
-TFT_HX8357_Due
+https://github.com/Bodmer/TFT_HX8357_Due
 
 Scheduler and SDfat libraries can install from the library manager.
 
