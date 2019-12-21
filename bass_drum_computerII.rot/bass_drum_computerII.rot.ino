@@ -1,6 +1,6 @@
 ////////////////////////////////////////////
 //    3.5" TOUCH SCREEN Bass & Drum       //
-//              Machine                  //
+//              Machine                   //
 //                                        //
 //            rom3 08.2019                //
 //                                        //
@@ -218,8 +218,8 @@ while(1){
   talkMIDI(0xB0, 0x0c, analogRead(A11)/8); // effect control 1 (sets global reverb decay)
   talkMIDI(0xB0, 0x26, analogRead(A10)/8); // RPN LSB: 0 = bend range
 //  VSWriteRegister(0x1e03, analogRead(A9), 0);
-  VSWriteRegister(0x1e03, analogRead(A8)/8, analogRead(A9)/8);
-//  VSWriteRegister(0x0B, analogRead(A8)/16, analogRead(A9)/16); // Master Vol control left right
+//  VSWriteRegister(0x1e03, analogRead(A8)/8, analogRead(A9)/8);
+  VSWriteRegister(0x0B, analogRead(A8)/16, analogRead(A9)/16); // Master Vol control left right
 //  VSWriteRegister(0x02, analogRead(A8)/16, analogRead(A9)/16);
 }
 }
