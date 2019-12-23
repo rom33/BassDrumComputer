@@ -40,7 +40,7 @@ if(currentMillis - previousMillis >= interval){
     }
     if (TempMinusButton.contains(x, y) || TempPlusButton.contains(x, y)) { //tempo buttons
       if (TempPlusButton.contains(x, y)?tempo += 1:tempo -= 1)
-        tft.setCursor(361, 178 );
+        tft.setCursor(361, 150 );
         Format(tempo);
         tft.print(tempo);
         return;

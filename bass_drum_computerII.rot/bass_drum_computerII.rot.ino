@@ -117,8 +117,13 @@ Button CopyButton       = Button(320, 220, 55, 25, "CP");
 Button PasteButton      = Button(380, 220, 55, 25, "PA");
 Button ClearButton      = Button(320, 190, 55, 25, "CL");
 Button SaveButton       = Button(380, 190, 55, 25, "SV");
-Button TempMinusButton  = Button(320, 150, 55, 25, "--");
-Button TempPlusButton   = Button(380, 150, 55, 25, "++");
+Button TempMinusButton  = Button(320, 160, 55, 25, "--");
+Button TempPlusButton   = Button(380, 160, 55, 25, "++");
+Button holeNote         = Button(440, 160, 40, 25, " 1");
+Button halfNote         = Button(440, 190, 40, 25, "1/2");
+Button quaterNote       = Button(440, 220, 40, 25, "1/4");
+Button eighthNote       = Button(440, 250, 40, 25, "1/8");
+Button sixteenthNote    = Button(440, 280, 40, 25, "1/16"); 
 //Button VolMinusButton   = Button(320, 36, 55, 40, "--");
 //Button VolPlusButton    = Button(380, 36, 55, 40, "++");
 Button Setup            = Button(320, 3, 115, 20, "Setup");
@@ -135,6 +140,20 @@ Button SoundBank2       = Button(380, 180, 55, 40, "Bk.2");
 Button Calibrate        = Button(240, 180, 15, 15, "");
 
 void setup() {
+//"15UL", tells the PLL what multiplier value to use
+//13UL = 84MHz,14UL = 90MHZ,15UL = 96MHz,16UL = 102MHz,17UL = 108MHz,18UL = 114MHz, 19UL = 120MHz 
+#define SYS_BOARD_PLLAR (CKGR_PLLAR_ONE | CKGR_PLLAR_MULA(13UL) | CKGR_PLLAR_PLLACOUNT(0x3fUL) | CKGR_PLLAR_DIVA(1UL))
+#define SYS_BOARD_MCKR ( PMC_MCKR_PRES_CLK_2 | PMC_MCKR_CSS_PLLA_CLK)
+//Set FWS according to SYS_BOARD_MCKR configuration
+EFC0->EEFC_FMR = EEFC_FMR_FWS(4); //4 waitstate flash access
+EFC1->EEFC_FMR = EEFC_FMR_FWS(4);
+// Initialize PLLA to 114MHz
+PMC->CKGR_PLLAR = SYS_BOARD_PLLAR;
+while (!(PMC->PMC_SR & PMC_SR_LOCKA)) {}
+PMC->PMC_MCKR = SYS_BOARD_MCKR;
+while (!(PMC->PMC_SR & PMC_SR_MCKRDY)) {}
+// Re-initialize some stuff with the new speed
+SystemCoreClockUpdate();
   pinMode (CLK1,INPUT);
   pinMode (DT1,INPUT);
   pinMode (CLK2,INPUT);
@@ -427,14 +446,19 @@ void drawRaster() {
   SaveButton.draw(tft);
   Rewind.draw(tft);
   Setup.draw(tft);
-  tft.setCursor(360, 178 );
+  tft.setCursor(360, 150 );
   tft.print(tempo);
-  tft.setCursor(385, 178 );
+  tft.setCursor(385, 150 );
   tft.print("bpm");
   if (!mode) {
     CopyButton.draw(tft);
     PasteButton.draw(tft);
     SongButton.draw(tft);
+    holeNote.draw(tft);
+    halfNote.draw(tft);
+    quaterNote.draw(tft);
+    eighthNote.draw(tft);
+    sixteenthNote.draw(tft); 
     drawKeys();
     tft.setCursor(275, 23 );
     tft.print("Acc");
