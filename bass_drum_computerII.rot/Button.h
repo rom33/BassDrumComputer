@@ -26,7 +26,7 @@ public:
   int m_width; // width of octave button
   int m_height; // height of octave button
 
-  Button(int xcoord, int ycoord, int width, int height, String buttonCaption); // prototype for constructor of Button object
+  Button(int xcoord, int ycoord, int width, int height, int colore,String buttonCaption); // prototype for constructor of Button object
 
   boolean contains(int tx, int ty);
   // This is a method (or "member function") declaration.

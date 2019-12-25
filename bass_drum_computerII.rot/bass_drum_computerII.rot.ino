@@ -72,7 +72,7 @@ unsigned short patch[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
 unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46};
 unsigned short slope, slope2, pat = 0, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
 unsigned short mode = 0, xxOld = 0, yyOld = 0, yyy;
-short tick = -1;
+short tick = -1,noteLen;
 bool play = false, copyPat = false, tool, testIt = false;
 unsigned long currTime, prevTime, currentMillis, previousMillis = 0, curMillis, prevMillis = 0;
 const long interval = 250;
@@ -109,35 +109,35 @@ String Sounds[] = {"Acoustic Grand Piano ","Bright Acoustic Piano","Electric Gra
                    "Reverse Cymbal       ","Guitar Fret Noise    ","Breath Noise         ","Seashore             ","Bird Tweet           ","Telephone Ring       ","Helicopter           ",
                    "Applause             ","Gunshot              "};
 
-Button StartStopButton  = Button(356, 280, 80, 35, "Start/Stop");
-Button Rewind           = Button(320, 280, 30, 35, "<<");
-Button SongButton       = Button(320, 250, 115, 25, "Song  Mode");
-Button PatButton        = Button(320, 250, 115, 25, "Pat.  Mode");
-Button CopyButton       = Button(320, 220, 55, 25, "CP");
-Button PasteButton      = Button(380, 220, 55, 25, "PA");
-Button ClearButton      = Button(320, 190, 55, 25, "CL");
-Button SaveButton       = Button(380, 190, 55, 25, "SV");
-Button TempMinusButton  = Button(320, 160, 55, 25, "--");
-Button TempPlusButton   = Button(380, 160, 55, 25, "++");
-Button holeNote         = Button(440, 160, 40, 25, " 1");
-Button halfNote         = Button(440, 190, 40, 25, "1/2");
-Button quaterNote       = Button(440, 220, 40, 25, "1/4");
-Button eighthNote       = Button(440, 250, 40, 25, "1/8");
-Button sixteenthNote    = Button(440, 280, 40, 25, "1/16"); 
+Button StartStopButton  = Button(356, 280, 80, 35, TFT_RED, "Start/Stop");
+Button Rewind           = Button(320, 280, 30, 35, TFT_RED, "<<");
+Button SongButton       = Button(320, 250, 115, 25, TFT_RED, "Song  Mode");
+Button PatButton        = Button(320, 250, 115, 25, TFT_RED, "Pat.  Mode");
+Button CopyButton       = Button(320, 220, 55, 25, TFT_RED, "CP");
+Button PasteButton      = Button(380, 220, 55, 25, TFT_RED, "PA");
+Button ClearButton      = Button(320, 190, 55, 25, TFT_RED, "CL");
+Button SaveButton       = Button(380, 190, 55, 25, TFT_RED, "SV");
+Button TempMinusButton  = Button(320, 160, 55, 25, TFT_RED, "--");
+Button TempPlusButton   = Button(380, 160, 55, 25, TFT_RED, "++");
+Button holeNote         = Button(440, 160, 40, 25, TFT_MAGENTA, " 1");
+Button halfNote         = Button(440, 190, 40, 25, TFT_YELLOW, "1/2");
+Button quaterNote       = Button(440, 220, 40, 25, TFT_CYAN, "1/4");
+Button eighthNote       = Button(440, 250, 40, 25, TFT_GREEN, "1/8");
+Button sixteenthNote    = Button(440, 280, 40, 25, TFT_RED, "1/16"); 
 //Button VolMinusButton   = Button(320, 36, 55, 40, "--");
 //Button VolPlusButton    = Button(380, 36, 55, 40, "++");
-Button Setup            = Button(320, 3, 115, 20, "Setup");
-Button ScrollUp         = Button(320, 220, 55, 25, "Up");
-Button ScrollDown       = Button(380, 220, 55, 25, "Dn");
-Button BackButton       = Button(380, 270, 55, 40, "Back");
-Button SaveSetup        = Button(320, 270, 55, 40, "Save");
-Button ScreenCalibrate  = Button(40, 40, 400, 40, "Screen Calibrate");
-Button DrumSetup        = Button(40, 140, 400, 40, "Setup Drums");
-Button SoundSetup       = Button(40, 190, 400, 40, "Setup Sound");
-Button LeadSetup        = Button(40, 240, 400, 40, "Setup Lead");
-Button SoundBank1       = Button(320, 180, 55, 40, "Bk.1");
-Button SoundBank2       = Button(380, 180, 55, 40, "Bk.2");
-Button Calibrate        = Button(240, 180, 15, 15, "");
+Button Setup            = Button(320, 3, 115, 20, TFT_RED, "Setup");
+Button ScrollUp         = Button(320, 220, 55, 25, TFT_RED, "Up");
+Button ScrollDown       = Button(380, 220, 55, 25, TFT_RED, "Dn");
+Button BackButton       = Button(380, 270, 55, 40, TFT_RED, "Back");
+Button SaveSetup        = Button(320, 270, 55, 40, TFT_RED, "Save");
+Button ScreenCalibrate  = Button(40, 40, 400, 40, TFT_RED, "Screen Calibrate");
+Button DrumSetup        = Button(40, 140, 400, 40, TFT_RED, "Setup Drums");
+Button SoundSetup       = Button(40, 190, 400, 40, TFT_RED, "Setup Sound");
+Button LeadSetup        = Button(40, 240, 400, 40, TFT_RED, "Setup Lead");
+Button SoundBank1       = Button(320, 180, 55, 40, TFT_RED, "Bk.1");
+Button SoundBank2       = Button(380, 180, 55, 40, TFT_RED, "Bk.2");
+Button Calibrate        = Button(240, 180, 15, 15, TFT_RED, "");
 
 void setup() {
 //"15UL", tells the PLL what multiplier value to use
@@ -249,9 +249,9 @@ void DrawValuePan(int value,int height){
 }
 void printCopyTo()
 {
-  tft.setCursor(10, 310 );
+  tft.setCursor(10, 305 );
   tft.print("To      :");
-  tft.setCursor(70, 310);
+  tft.setCursor(70, 305);
   tft.print(copyTo, HEX);
 }
 
@@ -347,6 +347,21 @@ void readCalibrate() {
 }
 void drawPattern()
 {
+   if(pat>7){
+      holeNote.draw(tft);
+      halfNote.draw(tft);
+      quaterNote.draw(tft);
+      eighthNote.draw(tft);
+      sixteenthNote.draw(tft);
+      tft.setCursor(90, 290);
+      tft.print("Sixteen Note");
+      noteLen=5;     
+   }else{
+      tft.fillRect(440, 160, 40, 150, TFT_BLUE);
+      tft.setCursor(90, 290);
+      tft.print("            ");
+      //      tft.fillRect(90, 290, 100, 8, TFT_BLUE);
+        }
   for (x = 0; x < 16; x++) {
     for (slope2 = 0; slope2 < 13; slope2++) {
       tool = !((instrument[slope2][pat]) & (1 <<  x));
@@ -454,16 +469,10 @@ void drawRaster() {
     CopyButton.draw(tft);
     PasteButton.draw(tft);
     SongButton.draw(tft);
-    holeNote.draw(tft);
-    halfNote.draw(tft);
-    quaterNote.draw(tft);
-    eighthNote.draw(tft);
-    sixteenthNote.draw(tft); 
     drawKeys();
     tft.setCursor(275, 23 );
     tft.print("Acc");
-  }
-  else {
+  } else {
     PatButton.draw(tft);
     ScrollUp.draw(tft);
     ScrollDown.draw(tft);
@@ -486,12 +495,8 @@ void patternMode() {
   tft.drawRect(11, 15, 16, 266, TFT_RED);
   tft.setCursor(10, 290 );
   tft.print("Play Pat:");
-  tft.setCursor(10, 310 );
+  tft.setCursor(10, 305 );
   tft.print("Next Pat:");
-/*  tft.setCursor(70, 290);
-  tft.print(0);
-  tft.setCursor(70, 310);
-  tft.print(0);*/
   for (x = 0; x < 16; x++) {
     tft.setCursor(16 + (x * 16), 269);
     tft.print(x, HEX);
@@ -510,7 +515,7 @@ void playNotes() {
       tft.print("Play");
       tft.setCursor(70, 290);
       tft.print(pat, HEX);
-      tft.setCursor(70, 310);
+      tft.setCursor(70, 305);
       tft.print(nextPat, HEX);
     }
     if (!play)  return;

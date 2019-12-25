@@ -6,6 +6,33 @@ if(currentMillis - previousMillis >= interval){
   if (tp.z > MINPRESSURE) {
     GetTouchPoints;
     previousMillis = currentMillis;
+if(pat>7){
+  if(holeNote.contains(x,y)){
+      tft.setCursor(90, 290);
+      tft.print("Hole Note   ");
+      noteLen=1;
+  }
+  if(halfNote.contains(x,y)){
+      tft.setCursor(90, 290);
+      tft.print("Halv Note   ");
+      noteLen=2;    
+  }
+  if(quaterNote.contains(x,y)){
+      tft.setCursor(90, 290);
+      tft.print("Quater Note ");
+      noteLen=3;    
+  }    
+  if(eighthNote.contains(x,y)){
+      tft.setCursor(90, 290);
+      tft.print("Eighth Note ");
+      noteLen=4;    
+  }
+  if(sixteenthNote.contains(x,y)){
+      tft.setCursor(90, 290);
+      tft.print("Sixteen Note");
+      noteLen=5;    
+  }
+}
     if (Setup.contains(x,y)){
       goSetup();
       patternMode();
@@ -104,7 +131,7 @@ else{ //or up in song mode
       patCopy();
       pat = nextPat = copyTo;
       drawPattern();
-      tft.setCursor(10, 310);
+      tft.setCursor(10, 305);
       tft.print("Next Pat:");
       return;
     }
