@@ -20,7 +20,7 @@ void drawPattern()
       tool = !((instrument[slope2][pat]) & (1 <<  x));
       xx = (x * 16) + 14;
       yy = 245 - (slope2 * 19);
-      DRAW;
+      DRAW(TFT_RED);
     }
   }
 }
@@ -32,7 +32,7 @@ void drawSong()
       tool = !((pattern[slope2 + pos] >> x) & (1));
       xx = (x * 16) + 14;
       yy = 264 - (slope2 * 19);
-      DRAW;
+      DRAW(TFT_RED);
     }
   }
 }
@@ -145,4 +145,18 @@ void DrawValuePan(int value,int height){
   tft.drawFastVLine(320+value, height, 6, TFT_WHITE);
   tft.drawFastVLine(321+value, height, 6, TFT_RED);
   tft.drawFastVLine(322+value, height, 6, TFT_WHITE);
+}
+void drawKeys() {
+  tft.fillRect(275, 36, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 55, 35, 17, TFT_BLACK);
+  tft.fillRect(275, 74, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 93, 35, 17, TFT_BLACK);
+  tft.fillRect(275, 112, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 131, 35, 17, TFT_BLACK);
+  tft.fillRect(275, 150, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 169, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 188, 35, 17, TFT_BLACK);
+  tft.fillRect(275, 207, 35, 17, TFT_WHITE);
+  tft.fillRect(275, 226, 35, 17, TFT_BLACK);
+  tft.fillRect(275, 245, 35, 17, TFT_WHITE);
 }

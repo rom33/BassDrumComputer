@@ -82,7 +82,7 @@ if(pat>7){
           for (yy = 17; yy < 247; yy += 19)
           {
             tool = true;
-            DRAW;
+            DRAW(TFT_RED);
           }
         }
       } else //clear song
@@ -94,7 +94,7 @@ if(pat>7){
           for (yy = 17; yy < 266; yy += 19)
           {
             tool = true;
-            DRAW;
+            DRAW(TFT_RED);
           }
         }
       }
@@ -178,7 +178,7 @@ else{ //or up in song mode
             yy=264;
             tool = ((pattern[pos] >> shift) & (1));
             pattern[pos] = ((1 << shift) ^ (pattern[pos]));
-            DRAW;
+            DRAW(TFT_RED);
             return;
           }
         }
@@ -205,7 +205,7 @@ else{ //or up in song mode
         for (slope = 0; slope < 13; slope++) {
           if ((y > (245 - (slope * 19))) && (y < (265 - (slope * 19)))) {
             inst = slope;
-            posy = slope;// + 1;
+            posy = slope;
             yy = 245 - (slope * 19);
             break;
           }
@@ -217,12 +217,31 @@ else{ //or up in song mode
             if(!mode) { //plot in pattern mode
               tool = ((instrument[inst][pat] >> shift) & (1));
               instrument[inst][pat] = ((1 << shift) ^ (instrument[inst][pat]));
-              DRAW;
+              if(pat>7){
+                switch(noteLen){
+                  case 1:
+                  col = TFT_MAGENTA;
+                  break;
+                  case 2:
+                  col = TFT_YELLOW;
+                  break;
+                  case 3:
+                  col = TFT_CYAN;
+                  break;
+                  case 4:
+                  col = TFT_GREEN;
+                  break;
+                  case 5:
+                  col = TFT_RED;
+                  break;
+                }
+               }else col = TFT_RED;
+                DRAW(col);
             }
             else {  //plot in song mode
                 tool = ((pattern[posy+pos+1] >> shift) & (1));
                 pattern[posy+pos+1] = ((1 << shift) ^ (pattern[posy+pos+1]));
-                DRAW;
+                DRAW(TFT_RED);
             }
           }
         return;
