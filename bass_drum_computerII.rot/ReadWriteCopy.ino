@@ -19,6 +19,11 @@ void savePat() {
   for (slope = 0; slope < 13; slope++) {
     file.println(instrument[slope][pat]);
   }
+    if(pat>7){
+    for(slope2 = 0; slope2 <16; slope2++){
+      file.println(bassNoteLen[slope2][pat]);
+    }
+  }
   file.close();
 }
 void saveSong() {
@@ -56,6 +61,12 @@ void readPat()
       String test = file.readStringUntil('\n');
       instrument[slope][pat] = test.toInt();
     }
+    if(pat>7){
+    for(slope2 = 0; slope2 <16; slope2++){
+      String test = file.readStringUntil('\n');
+      bassNoteLen[slope2][pat] = test.toInt();;
+    }
+  }  
   }
   file.close();
 }

@@ -13,14 +13,34 @@ void drawPattern()
       tft.fillRect(440, 160, 40, 150, TFT_BLUE);
       tft.setCursor(90, 290);
       tft.print("            ");
-      //      tft.fillRect(90, 290, 100, 8, TFT_BLUE);
         }
   for (x = 0; x < 16; x++) {
     for (slope2 = 0; slope2 < 13; slope2++) {
       tool = !((instrument[slope2][pat]) & (1 <<  x));
+      if(pat>7&&slope2!=12){
+        if((instrument[slope2][pat] >> x) & (1))
+        noteLen = bassNoteLen[x][pat];
+              switch(noteLen){
+                  case 1:
+                  col = TFT_MAGENTA;
+                  break;
+                  case 2:
+                  col = TFT_YELLOW;
+                  break;
+                  case 3:
+                  col = TFT_CYAN;
+                  break;
+                  case 4:
+                  col = TFT_GREEN;
+                  break;
+                  case 5:
+                  col = TFT_RED;
+                  break;
+                }
+        }else col=TFT_RED;
       xx = (x * 16) + 14;
       yy = 245 - (slope2 * 19);
-      DRAW(TFT_RED);
+      DRAW(col);
     }
   }
 }

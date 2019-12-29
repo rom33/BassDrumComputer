@@ -215,28 +215,45 @@ else{ //or up in song mode
             shift = slope;
             xx = (slope * 16) + 14;
             if(!mode) { //plot in pattern mode
-              tool = ((instrument[inst][pat] >> shift) & (1));
-              instrument[inst][pat] = ((1 << shift) ^ (instrument[inst][pat]));
               if(pat>7){
+                for(slope2=0;slope2<12;slope2++){
+                  if(slope2!=inst&&inst!=12){
+                    if((instrument[slope2][pat] >> shift) & (1)){
+                      tst = false;
+                      break;
+                    }
+                  }
+                }
+                if(tst && inst!=12){
                 switch(noteLen){
                   case 1:
                   col = TFT_MAGENTA;
+                  bassNoteLen[shift][pat]=1;
                   break;
                   case 2:
                   col = TFT_YELLOW;
+                  bassNoteLen[shift][pat]=2;
                   break;
                   case 3:
                   col = TFT_CYAN;
+                  bassNoteLen[shift][pat]=3;
                   break;
                   case 4:
                   col = TFT_GREEN;
+                  bassNoteLen[shift][pat]=4;
                   break;
                   case 5:
                   col = TFT_RED;
+                  bassNoteLen[shift][pat]=5;
                   break;
                 }
+                }else col = TFT_RED;
                }else col = TFT_RED;
-                DRAW(col);
+               if(tst){
+              tool = ((instrument[inst][pat] >> shift) & (1));
+              instrument[inst][pat] = ((1 << shift) ^ (instrument[inst][pat]));
+              DRAW(col);
+            }else tst=true;
             }
             else {  //plot in song mode
                 tool = ((pattern[posy+pos+1] >> shift) & (1));
