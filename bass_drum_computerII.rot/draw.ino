@@ -8,7 +8,6 @@ void drawPattern()
       sixteenthNote.draw(tft);
       tft.setCursor(90, 290);
       tft.print("Sixteen Note");
-      noteLen=5;     
    }else{
       tft.fillRect(440, 160, 40, 150, TFT_BLUE);
       tft.setCursor(90, 290);
@@ -18,26 +17,32 @@ void drawPattern()
     for (slope2 = 0; slope2 < 13; slope2++) {
       tool = !((instrument[slope2][pat]) & (1 <<  x));
       if(pat>7&&slope2!=12){
-        if((instrument[slope2][pat] >> x) & (1))
+        if((instrument[slope2][pat] >> x) & (1)){
         noteLen = bassNoteLen[x][pat];
               switch(noteLen){
                   case 1:
                   col = TFT_MAGENTA;
+                  offBeat(16,pat,slope2,x);
                   break;
                   case 2:
                   col = TFT_YELLOW;
+                  offBeat(8,pat,slope2,x);             
                   break;
                   case 3:
                   col = TFT_CYAN;
+                  offBeat(4,pat,slope2,x);
                   break;
                   case 4:
                   col = TFT_GREEN;
+                  offBeat(2,pat,slope2,x);
                   break;
                   case 5:
                   col = TFT_RED;
+                  offBeat(1,pat,slope2,x);
                   break;
                 }
         }else col=TFT_RED;
+      }else col=TFT_RED;
       xx = (x * 16) + 14;
       yy = 245 - (slope2 * 19);
       DRAW(col);
@@ -167,16 +172,8 @@ void DrawValuePan(int value,int height){
   tft.drawFastVLine(322+value, height, 6, TFT_WHITE);
 }
 void drawKeys() {
-  tft.fillRect(275, 36, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 55, 35, 17, TFT_BLACK);
-  tft.fillRect(275, 74, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 93, 35, 17, TFT_BLACK);
-  tft.fillRect(275, 112, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 131, 35, 17, TFT_BLACK);
-  tft.fillRect(275, 150, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 169, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 188, 35, 17, TFT_BLACK);
-  tft.fillRect(275, 207, 35, 17, TFT_WHITE);
-  tft.fillRect(275, 226, 35, 17, TFT_BLACK);
-  tft.fillRect(275, 245, 35, 17, TFT_WHITE);
+  for (int i = 0; i<12; i++) // draws keys
+  {
+    keys[i].draw(tft);
+  }
 }

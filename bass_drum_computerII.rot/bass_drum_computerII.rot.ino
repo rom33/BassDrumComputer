@@ -10,6 +10,7 @@
 #include <TFT_HX8357_Due.h>
 #include <Scheduler.h>
 #include "Button.h"
+#include "Key.h"
 #include "TouchScreen_kbv.h"
 
 #include <SdFat.h>
@@ -19,7 +20,7 @@ SdFatSoftSpi<12, 11, 13> SD; //Bit-Bang on the Shield pins
 #define VS_XCS    46 // Control Chip Select Pin (for accessing SPI Control/Status registers)
 #define VS_XDCS   48 // Data Chip Select / BSYNC Pin
 #define VS_DREQ   50 // Data Request Pin: Player asks for more data
-#define VS_RESET  52 //Reset is active low
+#define VS_RESET  53 // Reset is active low
 
 #define DRAW(Colour) if (tool ? color = TFT_BLUE : color = Colour);tft.fillRect(xx + 3, yy + 4, 5 , 7, color);
 #define GetTouchPoints tp=myTouch.getPoint();x=map(tp.x,TS_MINX,TS_MAXX,480,0);y=map(tp.y,TS_MINY,TS_MAXY,320,0);
@@ -64,16 +65,17 @@ bool pressed = false;
 int rotMode1,rotMode2,rotMode3;
 
 int rX[8], rY[8], col;
-unsigned short int x, y, xx, yy, tempo = 120, shift, inst, Vol1 = 100, Vol2= 100, Vol3 = 100, buff, soundPatch, leadPatch;
+unsigned short int x, y, xx, yy, tempo = 120, shift, inst, Vol1 = 100, Vol2= 100, Vol3 = 100, buff, soundPatch, leadPatch, offStep;
 unsigned short pattern[300];
-unsigned long instrument[13][16];
+unsigned short instrument[13][16];
 unsigned short bassNoteLen[16][16];
+unsigned long  bassNoteOff[16][16];
 unsigned short channel, bank, note;
 unsigned short patch[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
 unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46};
 unsigned short slope, slope2, pat = 0, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
 unsigned short mode = 0, xxOld = 0, yyOld = 0, yyy;
-short tick = -1,noteLen;
+short tick = -1,noteLen = 5;
 bool play = false, copyPat = false, tool, testIt = false, tst = true;
 unsigned long currTime, prevTime, currentMillis, previousMillis = 0, curMillis, prevMillis = 0;
 const long interval = 250;
@@ -139,6 +141,22 @@ Button LeadSetup        = Button(40, 240, 400, 40, TFT_RED, "Setup Lead");
 Button SoundBank1       = Button(320, 180, 55, 40, TFT_RED, "Bk.1");
 Button SoundBank2       = Button(380, 180, 55, 40, TFT_RED, "Bk.2");
 Button Calibrate        = Button(240, 180, 15, 15, TFT_RED, "");
+
+Key keys[] = 
+{
+  Key (TFT_WHITE,275,245),
+  Key (TFT_BLACK,275,226),
+  Key (TFT_WHITE,275,207),
+  Key (TFT_BLACK,275,188),
+  Key (TFT_WHITE,275,169),
+  Key (TFT_BLACK,275,150),
+  Key (TFT_WHITE,275,131),
+  Key (TFT_WHITE,275,112),
+  Key (TFT_BLACK,275,93),
+  Key (TFT_WHITE,275,74),
+  Key (TFT_BLACK,275,55),
+  Key (TFT_WHITE,275,36),
+};
 
 void setup() {
 //"15UL", tells the PLL what multiplier value to use
@@ -209,8 +227,8 @@ SystemCoreClockUpdate();
   talkMIDI(0xC1, leadPatch, 0); //Set instrument number. 0xC0 is a 1 data byte command
   talkMIDI(0xB1, 0x07, Vol1);//0x07 is channel message, set channel volume to near max (127)
 
-  //  Serial.begin(9600); //Use serial for debugging
-  //  Serial.println("VS1053 Shield Example");
+  Serial.begin(9600); //Use serial for debugging
+  Serial.println("VS1053 Shield Example");
   tft.init();
   tft.setRotation(1);
   tft.setTextColor(TFT_WHITE, TFT_BLUE);
@@ -233,7 +251,11 @@ void loop() {
 while(1){
   playNotes();
   delay(250 * 60 / tempo);
-  talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
+  noteOff(0, bassNoteOff[tick][pat], 127);
+Serial.print(tick);
+Serial.print(" : ");
+Serial.println(bassNoteOff[tick][pat]);
+//  talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
   talkMIDI(0xB1, 0x7b, 127); //all notes channel 2 off
   talkMIDI(0xB0, 0x0c, analogRead(A11)/8); // effect control 1 (sets global reverb decay)
   talkMIDI(0xB0, 0x26, analogRead(A10)/8); // RPN LSB: 0 = bend range
@@ -308,7 +330,7 @@ void playNotes() {
           channel = 1;
           note = bass[slope]+12;
         }
-          noteOn(channel, note, 40 + (((instrument[12][pat] & (0x0f)>> tick) & (1)) * 20));
+          noteOn(channel, note, 40 + (((instrument[12][pat] >> tick) & (1)) * 20));
         }
     } return;
   }
@@ -343,7 +365,7 @@ void playNotes() {
           note = bass[slope]+12;
 //          talkMIDI(0xB0, 0x0c, reverb1);              
             }
-            noteOn(channel, note, 40 + (((instrument[12][slope2] & (0x0f) >> tick) & (1)) * 20));
+            noteOn(channel, note, 40 + ((instrument[12][slope2] >> tick) & (1) * 20));
           }
         }
       }

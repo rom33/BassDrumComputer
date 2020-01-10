@@ -18,9 +18,8 @@
 class Button // defines data type and names it 'Button'
 {
 public:  
-  String m_caption; // captions for octave change buttons - either '+' or '-' 
-                    // member variables are designated with 'm_' prefix
-  int m_color; 
+  String m_caption; // captions for buttons
+  int m_color; // button Color
   int m_x; // x and y coordinates are start point for drawing octave buttons
   int m_y;  
   int m_width; // width of octave button

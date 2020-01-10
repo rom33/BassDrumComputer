@@ -84,6 +84,12 @@ if(pat>7){
             tool = true;
             DRAW(TFT_RED);
           }
+          if(pat>7){
+            for(slope=0;slope<16;slope++){
+              bassNoteOff[slope][pat]=0; 
+            }
+          talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
+          }
         }
       } else //clear song
       { for (slope = 0; slope < 300; slope++) {
@@ -168,6 +174,7 @@ else{ //or up in song mode
             if ((!play) && (!copyPat)) {
               pat = slope;
               drawPattern();
+              noteLen=5;
               playNotes();
             }
             nextPat = slope;
@@ -184,23 +191,21 @@ else{ //or up in song mode
         }
       }
     }
-    //play note
-    if ((!mode) && (x > 275) && (x < 310)) {
-      for (yy = 0; yy < 12; yy++)
+   for (int i = 0; i < 12; i++)//play note
+    {
+     if (keys[i].contains (x,y))
       {
-        if ((y > (yy * 19) + 36) && (y < (yy * 19) + 55)) {
-          break;
-        }
-      }
       if (pat < 8) {
-        noteOn(9, patch[11 - yy], 60);
+        noteOn(9, patch[i], 60);
         } else if(pat >7 && pat <12) {
-        noteOn(0, bass[11-yy], 60);
+        noteOn(0, bass[i], 60);
       }else{
-        noteOn(1,bass[yy-11]+12, 60);
+        noteOn(1,bass[i]+12, 60);
       }
       return;
-}
+        }
+     }
+    
     if ( x > 10 && x < 266 && y > 17 && y < 280 ) {
         for (slope = 0; slope < 13; slope++) {
           if ((y > (245 - (slope * 19))) && (y < (265 - (slope * 19)))) {
@@ -229,22 +234,27 @@ else{ //or up in song mode
                   case 1:
                   col = TFT_MAGENTA;
                   bassNoteLen[shift][pat]=1;
+                  offBeat(16,pat,inst,shift);
                   break;
                   case 2:
                   col = TFT_YELLOW;
                   bassNoteLen[shift][pat]=2;
+                  offBeat(8,pat,inst,shift);                  
                   break;
                   case 3:
                   col = TFT_CYAN;
                   bassNoteLen[shift][pat]=3;
+                  offBeat(4,pat,inst,shift);
                   break;
                   case 4:
                   col = TFT_GREEN;
                   bassNoteLen[shift][pat]=4;
+                  offBeat(2,pat,inst,shift);
                   break;
                   case 5:
                   col = TFT_RED;
                   bassNoteLen[shift][pat]=5;
+                  offBeat(1,pat,inst,shift);                  
                   break;
                 }
                 }else col = TFT_RED;
@@ -266,6 +276,11 @@ else{ //or up in song mode
   }
 }
   yield();
+}
+void offBeat(int OffStep, int Pattern,int Note, int Beat){
+      OffStep=Beat+OffStep; 
+      if(OffStep>15) OffStep-=16;
+      bassNoteOff[OffStep][Pattern]=bass[Note];
 }
 void readRot(){
    currentPosition1 = digitalRead(CLK1);
