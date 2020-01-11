@@ -20,23 +20,23 @@ void drawPattern()
         if((instrument[slope2][pat] >> x) & (1)){
         noteLen = bassNoteLen[x][pat];
               switch(noteLen){
-                  case 1:
+                  case 15:
                   col = TFT_MAGENTA;
                   offBeat(16,pat,slope2,x);
                   break;
-                  case 2:
+                  case 8:
                   col = TFT_YELLOW;
                   offBeat(8,pat,slope2,x);             
                   break;
-                  case 3:
+                  case 4:
                   col = TFT_CYAN;
                   offBeat(4,pat,slope2,x);
                   break;
-                  case 4:
+                  case 2:
                   col = TFT_GREEN;
                   offBeat(2,pat,slope2,x);
                   break;
-                  case 5:
+                  case 1:
                   col = TFT_RED;
                   offBeat(1,pat,slope2,x);
                   break;

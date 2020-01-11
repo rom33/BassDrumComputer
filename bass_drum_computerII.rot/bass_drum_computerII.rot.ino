@@ -72,7 +72,7 @@ unsigned short bassNoteLen[16][16];
 unsigned long  bassNoteOff[16][16];
 unsigned short channel, bank, note;
 unsigned short patch[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
-unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46};
+unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,0};
 unsigned short slope, slope2, pat = 0, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
 unsigned short mode = 0, xxOld = 0, yyOld = 0, yyy;
 short tick = -1,noteLen = 5;
@@ -158,7 +158,7 @@ Key keys[] =
   Key (TFT_WHITE,275,36),
 };
 
-void setup() {
+void setup() {/*
 //"15UL", tells the PLL what multiplier value to use
 //13UL = 84MHz,14UL = 90MHZ,15UL = 96MHz,16UL = 102MHz,17UL = 108MHz,18UL = 114MHz, 19UL = 120MHz 
 #define SYS_BOARD_PLLAR (CKGR_PLLAR_ONE | CKGR_PLLAR_MULA(13UL) | CKGR_PLLAR_PLLACOUNT(0x3fUL) | CKGR_PLLAR_DIVA(1UL))
@@ -172,7 +172,7 @@ while (!(PMC->PMC_SR & PMC_SR_LOCKA)) {}
 PMC->PMC_MCKR = SYS_BOARD_MCKR;
 while (!(PMC->PMC_SR & PMC_SR_MCKRDY)) {}
 // Re-initialize some stuff with the new speed
-SystemCoreClockUpdate();
+SystemCoreClockUpdate();*/
   pinMode (CLK1,INPUT);
   pinMode (DT1,INPUT);
   pinMode (CLK2,INPUT);
@@ -227,8 +227,8 @@ SystemCoreClockUpdate();
   talkMIDI(0xC1, leadPatch, 0); //Set instrument number. 0xC0 is a 1 data byte command
   talkMIDI(0xB1, 0x07, Vol1);//0x07 is channel message, set channel volume to near max (127)
 
-  Serial.begin(9600); //Use serial for debugging
-  Serial.println("VS1053 Shield Example");
+//  Serial.begin(9600); //Use serial for debugging
+//  Serial.println("VS1053 Shield Example");
   tft.init();
   tft.setRotation(1);
   tft.setTextColor(TFT_WHITE, TFT_BLUE);
@@ -251,10 +251,7 @@ void loop() {
 while(1){
   playNotes();
   delay(250 * 60 / tempo);
-  noteOff(0, bassNoteOff[tick][pat], 127);
-Serial.print(tick);
-Serial.print(" : ");
-Serial.println(bassNoteOff[tick][pat]);
+if(bassNoteOff[tick][pat]!=0) noteOff(0, bassNoteOff[tick][pat], 127);
 //  talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
   talkMIDI(0xB1, 0x7b, 127); //all notes channel 2 off
   talkMIDI(0xB0, 0x0c, analogRead(A11)/8); // effect control 1 (sets global reverb decay)

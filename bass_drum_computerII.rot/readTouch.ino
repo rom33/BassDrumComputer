@@ -10,27 +10,27 @@ if(pat>7){
   if(holeNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Hole Note   ");
-      noteLen=1;
+      noteLen=15;
   }
   if(halfNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Halv Note   ");
-      noteLen=2;    
+      noteLen=8;    
   }
   if(quaterNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Quater Note ");
-      noteLen=3;    
+      noteLen=4;    
   }    
   if(eighthNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Eighth Note ");
-      noteLen=4;    
+      noteLen=2;    
   }
   if(sixteenthNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Sixteen Note");
-      noteLen=5;    
+      noteLen=1;    
   }
 }
     if (Setup.contains(x,y)){
@@ -63,6 +63,10 @@ if(pat>7){
     if (StartStopButton.contains(x, y)) {
       play = !play;  //Start/Stop button
       tft.fillRect(455, 5, 20, 20 ,TFT_BLUE);
+      if(!play){
+        talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
+        talkMIDI(0xB1, 0x7b, 127); //all notes channel 2 off
+      }
       return;
     }
     if (TempMinusButton.contains(x, y) || TempPlusButton.contains(x, y)) { //tempo buttons
@@ -174,7 +178,7 @@ else{ //or up in song mode
             if ((!play) && (!copyPat)) {
               pat = slope;
               drawPattern();
-              noteLen=5;
+              noteLen=1;
               playNotes();
             }
             nextPat = slope;
@@ -199,8 +203,12 @@ else{ //or up in song mode
         noteOn(9, patch[i], 60);
         } else if(pat >7 && pat <12) {
         noteOn(0, bass[i], 60);
+        treadWater();
+        noteOff(0, bass[i], 60);
       }else{
         noteOn(1,bass[i]+12, 60);
+        treadWater();
+        noteOff(1, bass[i]+12, 60);        
       }
       return;
         }
@@ -221,39 +229,31 @@ else{ //or up in song mode
             xx = (slope * 16) + 14;
             if(!mode) { //plot in pattern mode
               if(pat>7){
-                for(slope2=0;slope2<12;slope2++){
-                  if(slope2!=inst&&inst!=12){
-                    if((instrument[slope2][pat] >> shift) & (1)){
-                      tst = false;
-                      break;
-                    }
-                  }
-                }
-                if(tst && inst!=12){
+                if(/*tst && */inst!=12){
                 switch(noteLen){
-                  case 1:
+                  case 15:
                   col = TFT_MAGENTA;
-                  bassNoteLen[shift][pat]=1;
-                  offBeat(16,pat,inst,shift);
+                  bassNoteLen[shift][pat]=16;
+                  offBeat(14,pat,inst,shift);
                   break;
-                  case 2:
+                  case 8:
                   col = TFT_YELLOW;
-                  bassNoteLen[shift][pat]=2;
+                  bassNoteLen[shift][pat]=8;
                   offBeat(8,pat,inst,shift);                  
                   break;
-                  case 3:
+                  case 4:
                   col = TFT_CYAN;
-                  bassNoteLen[shift][pat]=3;
+                  bassNoteLen[shift][pat]=4;
                   offBeat(4,pat,inst,shift);
                   break;
-                  case 4:
+                  case 2:
                   col = TFT_GREEN;
-                  bassNoteLen[shift][pat]=4;
+                  bassNoteLen[shift][pat]=2;
                   offBeat(2,pat,inst,shift);
                   break;
-                  case 5:
+                  case 1:
                   col = TFT_RED;
-                  bassNoteLen[shift][pat]=5;
+                  bassNoteLen[shift][pat]=1;
                   offBeat(1,pat,inst,shift);                  
                   break;
                 }
@@ -262,6 +262,11 @@ else{ //or up in song mode
                if(tst){
               tool = ((instrument[inst][pat] >> shift) & (1));
               instrument[inst][pat] = ((1 << shift) ^ (instrument[inst][pat]));
+              if(tool){
+                //Serial.println("del");
+                offBeat(bassNoteLen[shift][pat],pat,12,shift);
+                noteOff(0, bass[inst], 60);
+              }
               DRAW(col);
             }else tst=true;
             }
