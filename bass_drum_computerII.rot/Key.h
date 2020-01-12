@@ -23,7 +23,7 @@ class Key // defines data type 'Key'
     int m_width; // width of key
     int m_height; // height of key
 
-  Key(int color, int keyy, int keyx); // prototype of constructor for 'Key' data type
+  Key(int color, int keyy); // prototype of constructor for 'Key' data type
   
   
   boolean contains(int tx, int ty);// method (or "member function") declaration.

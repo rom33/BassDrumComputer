@@ -3,6 +3,57 @@ void readTouch() {
   currentMillis = millis();
   GetTouchPoints;
 if(currentMillis - previousMillis >= interval){
+  if(touched>0)
+  {
+    switch(touched){
+    case 1:
+    holeNote.draw(tft,TFT_MAGENTA);
+    break;
+    case 2:
+    halfNote.draw(tft,TFT_YELLOW);
+    break;
+    case 3:
+    quaterNote.draw(tft,TFT_CYAN);
+    break;
+    case 4:
+    eighthNote.draw(tft,TFT_GREEN);
+    break;
+    case 5:
+    sixteenthNote.draw(tft,buttonColor);
+    break;
+    case 6:
+    SaveButton.draw(tft,buttonColor);
+    break; 
+    case 7:
+    Rewind.draw(tft,buttonColor);
+    break;
+    case 8:
+    StartStopButton.draw(tft,buttonColor);  
+    break;
+    case 9:
+    TempMinusButton.draw(tft,buttonColor);                 
+    break;
+    case 10:
+    TempPlusButton.draw(tft,buttonColor);
+    break;
+    case 11:
+    ClearButton.draw(tft,buttonColor);
+    break;
+    case 12:
+    CopyButton.draw(tft,buttonColor);
+    break;
+    case 13:
+    ScrollUp.draw(tft,buttonColor);
+    break;
+    case 14:
+    PasteButton.draw(tft,buttonColor);
+    break;
+    case 15:
+    ScrollDown.draw(tft,buttonColor);
+    break;
+    }
+  touched=0;
+  }
   if (tp.z > MINPRESSURE) {
     GetTouchPoints;
     previousMillis = currentMillis;
@@ -10,27 +61,42 @@ if(pat>7){
   if(holeNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Hole Note   ");
-      noteLen=15;
+      noteLen=16;
+      touched=1;
+      holeNote.draw(tft,buttonTouched);
+      return;
   }
   if(halfNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Halv Note   ");
-      noteLen=8;    
+      noteLen=8;
+      touched=2;
+      halfNote.draw(tft,buttonTouched);
+      return;    
   }
   if(quaterNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Quater Note ");
-      noteLen=4;    
+      noteLen=4;
+      touched=3;
+      quaterNote.draw(tft,buttonTouched);
+      return;          
   }    
   if(eighthNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Eighth Note ");
-      noteLen=2;    
+      noteLen=2;
+      touched=4;
+      eighthNote.draw(tft,buttonTouched);
+      return;    
   }
   if(sixteenthNote.contains(x,y)){
       tft.setCursor(90, 290);
       tft.print("Sixteen Note");
-      noteLen=1;    
+      noteLen=1;
+      touched=5;
+      sixteenthNote.draw(tft,buttonTouched);
+      return;          
   }
 }
     if (Setup.contains(x,y)){
@@ -40,7 +106,7 @@ if(pat>7){
     }
     if (Rewind.contains(x, y)) 
     {
-      if (!mode) {
+      if (!mode&&tick!=-1) {
         tft.fillRect((tick) * 16 + 12, 263, 14, 17, TFT_BLUE);
         tft.drawRect((tick) * 16 + 11, 15, 16, 266, TFT_WHITE);
         tft.setCursor(16 + (tick * 16), 269);
@@ -51,31 +117,43 @@ if(pat>7){
         tft.setCursor(16, 269);
         tft.print(0, HEX);
       }
-      else {
+      else if(mode)
+      {
         tick = -1;
         pos = 1;
         tft.fillRect(280,20,30,260,TFT_BLUE);
         drawSong();
         printSongPart();
       }
+    Rewind.draw(tft,buttonTouched);
+    touched=7;
     return;
     }
     if (StartStopButton.contains(x, y)) {
       play = !play;  //Start/Stop button
       tft.fillRect(455, 5, 20, 20 ,TFT_BLUE);
-      if(!play){
-        talkMIDI(0xB0, 0x7b, 127); //all notes channel 1 off
-        talkMIDI(0xB1, 0x7b, 127); //all notes channel 2 off
-      }
+      StartStopButton.draw(tft,buttonTouched);
+      touched=8;
       return;
     }
-    if (TempMinusButton.contains(x, y) || TempPlusButton.contains(x, y)) { //tempo buttons
-      if (TempPlusButton.contains(x, y)?tempo += 1:tempo -= 1)
+    if (TempMinusButton.contains(x, y)) { //tempo buttons
+        tempo -= 1;
         tft.setCursor(361, 150 );
         Format(tempo);
         tft.print(tempo);
+        TempMinusButton.draw(tft,buttonTouched);
+        touched=9;
         return;
     }
+    if (TempPlusButton.contains(x, y)) { //tempo buttons
+        tempo += 1;
+        tft.setCursor(361, 150 );
+        Format(tempo);
+        tft.print(tempo);
+        TempPlusButton.draw(tft,buttonTouched);
+        touched=10;
+        return;
+    }    
     if (ClearButton.contains(x, y)) {
       if (!mode) // clear pattern
       { for (slope = 0; slope < 13; slope++) {
@@ -108,21 +186,28 @@ if(pat>7){
           }
         }
       }
+      ClearButton.draw(tft,buttonTouched);
+      touched=11;
       return;
     }
     if (SaveButton.contains(x, y)) // save pattern / song
     {
       if (!mode) {
         savePat();
-      } else {
+       } else {
         saveSong();
-      } return;
+      } 
+      SaveButton.draw(tft,buttonTouched);
+      touched=6;
+      return;
     }
 
     if (CopyButton.contains(x, y)) //copy pattern
     {
      if(!mode){
       copyPat = true;
+      CopyButton.draw(tft,buttonTouched);
+      touched=12;
       return;
     }
 else{ //or up in song mode
@@ -130,7 +215,9 @@ else{ //or up in song mode
       pos+=1;
       if(pos==300)pos=1;
         drawSong();
-        printSongPart();  
+        printSongPart();
+        ScrollUp.draw(tft,buttonTouched);
+        touched=13;  
         return;    
     }    
 }
@@ -143,6 +230,8 @@ else{ //or up in song mode
       drawPattern();
       tft.setCursor(10, 305);
       tft.print("Next Pat:");
+      PasteButton.draw(tft,buttonTouched);
+      touched=14;
       return;
     }
     else // or down in song mode
@@ -152,6 +241,8 @@ else{ //or up in song mode
         drawSong();
         tft.fillRect(280,20,30,260,TFT_BLUE);
         printSongPart();
+        ScrollDown.draw(tft,buttonTouched);
+        touched=15;
         return;     
     }
     }
@@ -165,6 +256,7 @@ else{ //or up in song mode
       else {
         songMode();
         }
+      
       return;
     }
     if ((y > 260) & (y < 282)) {
@@ -178,7 +270,6 @@ else{ //or up in song mode
             if ((!play) && (!copyPat)) {
               pat = slope;
               drawPattern();
-              noteLen=1;
               playNotes();
             }
             nextPat = slope;
@@ -231,10 +322,10 @@ else{ //or up in song mode
               if(pat>7){
                 if(/*tst && */inst!=12){
                 switch(noteLen){
-                  case 15:
+                  case 16:
                   col = TFT_MAGENTA;
                   bassNoteLen[shift][pat]=16;
-                  offBeat(14,pat,inst,shift);
+                  offBeat(16,pat,inst,shift);
                   break;
                   case 8:
                   col = TFT_YELLOW;

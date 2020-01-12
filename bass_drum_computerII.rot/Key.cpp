@@ -9,11 +9,11 @@
 #include <TFT_HX8357_Due.h>
 
 // constructor for keyboard keys
-Key::Key(int color, int keyx, int keyy) 
+Key::Key(int color, int keyy) 
 {
   m_color  = color;
   m_y = keyy;
-  m_x = keyx;
+  m_x = 275;
   m_width = 35 ;
   m_height = 17 ;
 }

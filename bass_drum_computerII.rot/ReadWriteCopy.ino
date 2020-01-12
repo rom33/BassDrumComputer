@@ -10,6 +10,11 @@ void patCopy() {
   for (slope = 0; slope < 13; slope++) {
     instrument[slope][copyTo] = instrument[slope][pat];
   }
+  if(pat>7){
+    for(slope2 = 0; slope2 <16; slope2++){
+    bassNoteLen[slope2][copyTo] = bassNoteLen[slope2][pat];    
+  }
+  }
   copyPat = false;
 }
 void savePat() {

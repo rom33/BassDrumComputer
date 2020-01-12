@@ -1,11 +1,11 @@
 void drawPattern()
 {
    if(pat>7){
-      holeNote.draw(tft);
-      halfNote.draw(tft);
-      quaterNote.draw(tft);
-      eighthNote.draw(tft);
-      sixteenthNote.draw(tft);
+      holeNote.draw(tft,TFT_MAGENTA);
+      halfNote.draw(tft,TFT_YELLOW);
+      quaterNote.draw(tft,TFT_CYAN);
+      eighthNote.draw(tft,TFT_GREEN);
+      sixteenthNote.draw(tft,buttonColor);
       tft.setCursor(90, 290);
       tft.print("Sixteen Note");
    }else{
@@ -20,7 +20,7 @@ void drawPattern()
         if((instrument[slope2][pat] >> x) & (1)){
         noteLen = bassNoteLen[x][pat];
               switch(noteLen){
-                  case 15:
+                  case 16:
                   col = TFT_MAGENTA;
                   offBeat(16,pat,slope2,x);
                   break;
@@ -42,6 +42,7 @@ void drawPattern()
                   break;
                 }
         }else col=TFT_RED;
+        noteLen=1;
       }else col=TFT_RED;
       xx = (x * 16) + 14;
       yy = 245 - (slope2 * 19);
@@ -64,9 +65,9 @@ void drawSong()
 void drawRaster() {
   rotMode1 =rotMode2 = rotMode3 = 0;
   tft.fillScreen(TFT_BLUE);
-  StartStopButton.draw(tft);
-  TempMinusButton.draw(tft);
-  TempPlusButton.draw(tft);
+  StartStopButton.draw(tft,buttonColor);
+  TempMinusButton.draw(tft,buttonColor);
+  TempPlusButton.draw(tft,buttonColor);
   tft.setCursor(320,27);
   tft.print("Drums");
   tft.setCursor(320,67);
@@ -135,25 +136,25 @@ void drawRaster() {
   tft.print(pan1-64);
   DrawValuePan(pan1,138); 
                  
-  ClearButton.draw(tft);
-  SaveButton.draw(tft);
-  Rewind.draw(tft);
-  Setup.draw(tft);
+  ClearButton.draw(tft,buttonColor);
+  SaveButton.draw(tft,buttonColor);
+  Rewind.draw(tft,buttonColor);
+  Setup.draw(tft,buttonColor);
   tft.setCursor(360, 150 );
   tft.print(tempo);
   tft.setCursor(385, 150 );
   tft.print("bpm");
   if (!mode) {
-    CopyButton.draw(tft);
-    PasteButton.draw(tft);
-    SongButton.draw(tft);
+    CopyButton.draw(tft,buttonColor);
+    PasteButton.draw(tft,buttonColor);
+    SongButton.draw(tft,buttonColor);
     drawKeys();
     tft.setCursor(275, 23 );
     tft.print("Acc");
   } else {
-    PatButton.draw(tft);
-    ScrollUp.draw(tft);
-    ScrollDown.draw(tft);
+    PatButton.draw(tft,buttonColor);
+    ScrollUp.draw(tft,buttonColor);
+    ScrollDown.draw(tft,buttonColor);
   }
   tft.setCursor(15, 5 );
   tft.print("Bass & Drum-Computer with VS1053 DSP");

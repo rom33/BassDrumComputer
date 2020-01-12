@@ -19,19 +19,18 @@ class Button // defines data type and names it 'Button'
 {
 public:  
   String m_caption; // captions for buttons
-  int m_color; // button Color
   int m_x; // x and y coordinates are start point for drawing octave buttons
   int m_y;  
   int m_width; // width of octave button
   int m_height; // height of octave button
 
-  Button(int xcoord, int ycoord, int width, int height, int colore,String buttonCaption); // prototype for constructor of Button object
+  Button(int xcoord, int ycoord, int width, int height,String buttonCaption); // prototype for constructor of Button object
 
   boolean contains(int tx, int ty);
   // This is a method (or "member function") declaration.
   // Its implementation (in Button.cpp) will check to see if one of the octave buttons has been pressed.
 
-  void draw(TFT_HX8357_Due tft);  
+  void draw(TFT_HX8357_Due tft, int colour);  
   // A second method declaration, it passes the parameter "TFT_HX8357_Due" 
   // to draw() and gives it the local name "tft". 
 };

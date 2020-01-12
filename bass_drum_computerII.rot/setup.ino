@@ -109,7 +109,7 @@ void calibrate() {
   TS_MAXX = (clx);
   TS_MINY = (cby);
   TS_MAXY = (cty);
-  Calibrate.draw(tft);
+  Calibrate.draw(tft,buttonColor);
   WaitTouch;
   GetTouchPoints;
   if(Calibrate.contains(x,y)) {
@@ -132,10 +132,10 @@ void goSetup() {
   mode = false;
   play = false;
   tft.fillScreen(TFT_BLUE);
-  ScreenCalibrate.draw(tft);
-  DrumSetup.draw(tft);
-  SoundSetup.draw(tft);
-  LeadSetup.draw(tft);
+  ScreenCalibrate.draw(tft,buttonColor);
+  DrumSetup.draw(tft,buttonColor);
+  SoundSetup.draw(tft,buttonColor);
+  LeadSetup.draw(tft,buttonColor);
   WaitTouch;
   GetTouchPoints;
   if (DrumSetup.contains(x, y)) {
@@ -153,8 +153,8 @@ void goSetup() {
 }
 void drumSetup() {
   tft.fillScreen(TFT_BLUE);
-  BackButton.draw(tft);
-  SaveSetup.draw(tft);
+  BackButton.draw(tft,buttonColor);
+  SaveSetup.draw(tft,buttonColor);
   for (xx = 0; xx < 62; xx += 2) {
     tft.drawFastHLine(0, xx * 5, 270, TFT_WHITE);
     tft.setCursor(4, xx * 5 + 2);
@@ -221,10 +221,10 @@ void drumSetup() {
 void soundSetup(int channel, String fileSave) {
   int Patch;
   tft.fillScreen(TFT_BLUE);
-  BackButton.draw(tft);
-  SaveSetup.draw(tft);
-  SoundBank1.draw(tft);
-  SoundBank2.draw(tft);
+  BackButton.draw(tft,buttonColor);
+  SaveSetup.draw(tft,buttonColor);
+  SoundBank1.draw(tft,buttonColor);
+  SoundBank2.draw(tft,buttonColor);
   for (xx = 0; xx < 62; xx += 2) {
     tft.drawFastHLine(0, xx * 5, 270, TFT_WHITE);
     tft.setCursor(4, xx * 5 + 2);
