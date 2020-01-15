@@ -18,7 +18,7 @@ void drawPattern()
       tool = !((instrument[slope2][pat]) & (1 <<  x));
       if(pat>7&&slope2!=12){
         if((instrument[slope2][pat] >> x) & (1)){
-        noteLen = bassNoteLen[x][pat];
+        noteLen = bassNoteLen[slope2][x][pat];
               switch(noteLen){
                   case 16:
                   col = TFT_MAGENTA;

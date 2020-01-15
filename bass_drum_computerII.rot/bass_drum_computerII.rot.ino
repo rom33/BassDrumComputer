@@ -68,19 +68,20 @@ int potRead1,potRead2,potRead3,val;
 bool pressed = false;
 int rotMode1,rotMode2,rotMode3;
 
-int rX[8], rY[8], col;
-unsigned short int x, y, xx, yy, tempo = 120, shift, inst, Vol1 = 100, Vol2= 100, Vol3 = 100, buff, soundPatch, leadPatch, offStep;
+int rX[8], rY[8], col, pat;
+unsigned short x, y, xx, yy, tempo = 120, shift, inst, Vol1 = 100, Vol2= 100, Vol3 = 100, buff, soundPatch, leadPatch, offStep;
+unsigned short noteLen;
 unsigned short pattern[300];
 unsigned short instrument[13][16];
-unsigned short bassNoteLen[16][16];
-unsigned long  bassNoteOff[16][16];
+unsigned short bassNoteLen[12][16][16];
+unsigned short bassNoteOff[12][16][16];
 unsigned short channel, bank, note;
 unsigned short patch[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
 unsigned short bass[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,0};
-unsigned short slope, slope2, pat = 0, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
+unsigned short slope, slope2, slope3, nextPat = 0, copyTo, color, color1, pos, posOld, posx, posy;
 unsigned short mode = 0, xxOld = 0, yyOld = 0, yyy;
-short tick = -1,noteLen;
-bool play = false, copyPat = false, tool, testIt = false, tst = true;
+short tick = -1,pressedKey;
+bool play = false, copyPat = false, tool, testIt = false,playNote;
 unsigned long currTime, prevTime, currentMillis, previousMillis = 0, curMillis, prevMillis = 0;
 const long interval = 250;
 float px, py;
@@ -216,9 +217,9 @@ SystemCoreClockUpdate();*/
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);  
   SPI.setClockDivider(100000); //Set SPI bus speed to 100K
-  SPI.transfer(0xFF); //Throw a dummy byte at the bus  
+//  SPI.transfer(0xFF); //Throw a dummy byte at the bus  
 
-  VSLoadUserCode();  
+//  VSLoadUserCode();  
 //  VSWriteRegister(0x1e03, 0xff, 0xff);
   talkMIDI(0xB9, 0, 0x7F);  //Bank select drums. midi cannel 10
   talkMIDI(0xB9, 0x07, Vol3);//0x07 is channel message, set channel volume to near max (127)
@@ -319,7 +320,9 @@ void playNotes() {
         drawPattern();
       }
     }
-if(bassNoteOff[tick][pat]!=0) noteOff(0, bassNoteOff[tick][pat], 127);
+for(slope=0;slope<12;slope++){
+  if(bassNoteOff[slope][tick][pat]!=0) noteOff(0, bassNoteOff[slope][tick][pat], 127);
+}
     tft.fillRect((tick) * 16 + 12, 263, 14, 17, TFT_BLACK);
     tft.drawRect((tick) * 16 + 11, 15, 16, 266, TFT_RED);
     tft.setCursor(16 + (tick * 16), 269);
@@ -364,6 +367,9 @@ if(bassNoteOff[tick][pat]!=0) noteOff(0, bassNoteOff[tick][pat], 127);
 //              talkMIDI(0xB0, 0x0c, reverb3);              
               }
             else if (slope2 > 7 && slope2 < 12) {
+              for(slope3=0;slope3<12;slope3++){
+  if(bassNoteOff[slope3][tick][pat]!=0) noteOff(0, bassNoteOff[slope3][tick][pat], 127);
+}
               channel = 0;
               note = bass[slope];
 //              talkMIDI(0xB0, 0x0c, reverb2);

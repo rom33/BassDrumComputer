@@ -9,13 +9,31 @@ void printCopyTo()
 void patCopy() {
   for (slope = 0; slope < 13; slope++) {
     instrument[slope][copyTo] = instrument[slope][pat];
+    if(pat>7&&slope!=12){
+    for(slope2 = 0; slope2 < 16; slope2++){
+    bassNoteLen[slope][slope2][copyTo] = bassNoteLen[slope][slope2][pat];    
   }
-  if(pat>7){
-    for(slope2 = 0; slope2 <16; slope2++){
-    bassNoteLen[slope2][copyTo] = bassNoteLen[slope2][pat];    
   }
   }
   copyPat = false;
+}
+void readPat()
+{
+  String str = String(pat) + "pat.txt";
+  file = SD.open(str);
+  if (file) {
+    for (slope = 0; slope < 13; slope++) {
+      String test = file.readStringUntil('\n');
+      instrument[slope][pat] = test.toInt();
+    if(pat>7&&slope!=12){
+    for(slope2 = 0; slope2 <16; slope2++){
+      String test = file.readStringUntil('\n');
+      bassNoteLen[slope][slope2][pat] = test.toInt();;
+    }
+    }
+    }
+  }
+  file.close();
 }
 void savePat() {
   String str = String(pat) + "pat.txt";
@@ -23,10 +41,10 @@ void savePat() {
   file.rewind();
   for (slope = 0; slope < 13; slope++) {
     file.println(instrument[slope][pat]);
-  }
-    if(pat>7){
+    if(pat>7&&slope!=12){
     for(slope2 = 0; slope2 <16; slope2++){
-      file.println(bassNoteLen[slope2][pat]);
+       file.println(bassNoteLen[slope][slope2][pat]);
+    }
     }
   }
   file.close();
@@ -56,24 +74,6 @@ void readSound() {
   file.close();
   talkMIDI(0xC0, soundPatch, 0); 
 }
-}
-void readPat()
-{
-  String str = String(pat) + "pat.txt";
-  file = SD.open(str);
-  if (file) {
-    for (slope = 0; slope < 13; slope++) {
-      String test = file.readStringUntil('\n');
-      instrument[slope][pat] = test.toInt();
-    }
-    if(pat>7){
-    for(slope2 = 0; slope2 <16; slope2++){
-      String test = file.readStringUntil('\n');
-      bassNoteLen[slope2][pat] = test.toInt();;
-    }
-  }  
-  }
-  file.close();
 }
 void readSong()
 {
