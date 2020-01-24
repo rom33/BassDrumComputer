@@ -51,9 +51,9 @@ const int DT2 = 28;
 const int CLK3 = 30;
 const int DT3 = 32;
 
-// *** some short subroutines
+// *** some MACROS
 #define DRAW(Colour) if (tool ? color = TFT_BLUE : color = Colour);tft.fillRect(xDraw, yDraw, 5 , 7, color);
-
+#define DrawOrNot if(pat!=nextPat){drawPattern();pat=nextPat;}if(instSelect!= instSelectOld){drawPattern();instSelectOld=instSelect;}
 
 // *** button declaraions
 Button ButtPat[] = {
@@ -117,9 +117,9 @@ Button keys[] =
 };
 // *** variable
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte rotMode1, rotMode2, rotMode3, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld;
+byte rotMode1, rotMode2, rotMode3, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
 bool play, tool;
-unsigned short drum[13][16], bass[13][16],lead[13][16];
+unsigned short instrument[4][13][16];
 unsigned short interval = 250, xDraw, yDraw, xx, yy, note, pat, nextPat, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120, Vol1 = 100, Vol2 = 100, Vol3 = 100;
 unsigned short drumSet[] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
@@ -127,7 +127,6 @@ unsigned short bassSet[] = {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46};
 unsigned short leadSet[] = {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58};
 unsigned long color;
 unsigned long currentMillis, previousMillis;
-
 
 void setup()  {
   /*
@@ -228,14 +227,14 @@ void loop() {
   }
 }
 void playNotes() {
-  if (!play) return;
+  if (!play) {
+    DrawOrNot;
+    return;
+  }
   if (tick > 15) {
     tick = 0;
     stp = 15;
-    if (pat != nextPat) {
-      drawPattern();
-      pat = nextPat;      
-    }
+    DrawOrNot;
   }
   if (tick > 0)
   {
@@ -243,15 +242,16 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if (instSelect == 0 && (drum[slope][pat] >> tick) & (1)) {
-      noteOn(9, drumSet[slope], 40 + (((drum[12][pat] >> tick) & (1)) * 20));
+    if(instSelect!=instSelectOld){instSel=instSelectOld;}else{instSel=instSelect;}
+    if (instSel == 0 && (instrument[0][slope][pat] >> tick) & (1)) {
+      noteOn(9, drumSet[slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
-    if (instSelect == 1 && (bass[slope][pat] >> tick) & (1)) {
-      noteOn(0, bassSet[slope], 40 + (((bass[12][pat] >> tick) & (1)) * 20));
+    if (instSel == 1 && (instrument[1][slope][pat] >> tick) & (1)) {
+      noteOn(0, bassSet[slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
     }
-    if (instSelect == 2 && (lead[slope][pat] >> tick) & (1)) {
-      noteOn(1, leadSet[slope], 40 + (((lead[12][pat] >> tick) & (1)) * 20));
-    }        
+    if (instSel == 2 && (instrument[2][slope][pat] >> tick) & (1)) {
+      noteOn(1, leadSet[slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
+    }
   }
   tick += 1;
 }

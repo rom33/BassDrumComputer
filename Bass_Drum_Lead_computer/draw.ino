@@ -42,8 +42,8 @@ void drawRec() {
 void drawPattern() {
   for (slope = 0; slope < 16; slope++) {
     for (slope2 = 0; slope2 < 13; slope2++) {
-      if ((drum[slope2][pat] & (1 <<  slope)) != (drum[slope2][nextPat] & (1 <<  slope))) {
-      tool = drum[slope2][pat] & (1 <<  slope);
+      if ((instrument[instSelect][slope2][pat] & (1 <<  slope)) != (instrument[instSelectOld][slope2][nextPat] & (1 <<  slope))) {
+      tool = !(instrument[instSelect][slope2][nextPat] & (1 <<  slope));
         xDraw = slope * 16 + 12;
         yDraw = (12 - slope2) * 19 + 12;
         DRAW(TFT_RED);

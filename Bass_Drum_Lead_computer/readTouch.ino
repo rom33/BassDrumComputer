@@ -15,21 +15,9 @@ void readTouch() {
         note = 12 - (abs((yy - 5) / 19));
         xDraw = stp * 16 + 12;
         yDraw = (12 - note) * 19 + 12;
-        if (instSelect == 0) {
-          tool = ((drum[note][pat] >> stp) & (1));
-          drum[note][pat] = ((1 << stp) ^ (drum[note][pat]));
-          DRAW(buttonColor[0]);
-        }
-        if (instSelect == 1) {
-          tool = ((bass[note][pat] >> stp) & (1));
-          bass[note][pat] = ((1 << stp) ^ (bass[note][pat]));
-          DRAW(buttonColor[0]);
-        }
-        if (instSelect == 2) {
-          tool = ((lead[note][pat] >> stp) & (1));
-          lead[note][pat] = ((1 << stp) ^ (lead[note][pat]));
-          DRAW(buttonColor[0]);
-        }        
+        tool = ((instrument[instSelect][note][pat] >> stp) & (1));
+        instrument[instSelect][note][pat] = ((1 << stp) ^ (instrument[instSelect][note][pat]));
+        DRAW(buttonColor[0]);
         return;
       }
       // *** note key touch?
@@ -80,7 +68,7 @@ void readTouch() {
           return;
         }
       }
-      for (slope = 0; slope < 4; slope++) {
+      for (slope = 0; slope < 3; slope++) {
         if (ButtInst[slope].contains (xx, yy)) {
           instSelectOld = instSelect;
           instSelect = slope;
@@ -92,9 +80,6 @@ void readTouch() {
     }// end of touch
   }
   yield();
-}
-void patternSelect() {
-
 }
 void buttonReverse() {
   if (touched > 0)
