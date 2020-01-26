@@ -1,4 +1,5 @@
 void readTouch() {
+  readRot();
   currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
@@ -156,4 +157,76 @@ void buttonReverse() {
     }
     touched = 0;
   }
+}
+void readRot() {
+  for (slope = 0; slope < 3; slope++) {
+    currentPosition[slope] = digitalRead(CLK[slope]);
+  }
+  currTime = millis();
+  if (currTime - prevTime >= interval * 3) pressed = false;
+  for (slope = 0; slope < 3; slope++) {
+    if (!digitalRead(rotButton[slope]) && !pressed)
+    {
+      rotMode[slope] += 1;
+      if (rotMode[slope] > 2)rotMode[slope] = 0;
+      if (rotMode[slope] == 0) {
+        tft.drawRect(320, 117 - (slope * 40), 129, 8, TFT_RED);
+        tft.drawRect(320, 127 - (slope * 40), 129, 8, TFT_WHITE);
+        tft.drawRect(320, 137 - (slope * 40), 129, 8, TFT_WHITE);
+      }
+      if (rotMode[slope] == 1) {
+        tft.drawRect(320, 117 - (slope * 40), 129, 8, TFT_WHITE);
+        tft.drawRect(320, 127 - (slope * 40), 129, 8, TFT_RED);
+        tft.drawRect(320, 137 - (slope * 40), 129, 8, TFT_WHITE);
+      }
+      if (rotMode[slope] == 2) {
+        tft.drawRect(320, 117 - (slope * 40), 129, 8, TFT_WHITE);
+        tft.drawRect(320, 127 - (slope * 40), 129, 8, TFT_WHITE);
+        tft.drawRect(320, 137 - (slope * 40), 129, 8, TFT_RED);
+      }
+      prevTime = currTime;
+      pressed = true;
+    }
+  }
+  for (slope = 0; slope < 3; slope++) {
+    if (currentPosition[slope] != lastPosition[slope]) {
+      (digitalRead(DT[slope]) != currentPosition[slope]) ? val++ : val--;
+      if (rotMode[slope] == 0) {
+        Vol[slope] = Value(Vol[slope] + val);
+        talkMIDI(0xB7 + slope, 0x07, Vol[slope]);
+        tft.setCursor(455, 118 - (slope * 40));
+        Format(Vol[slope]);
+        tft.print(Vol[slope]);
+        DrawValue(Vol[slope], 118 - (slope * 40));
+      }
+      if (rotMode[slope] == 1) {
+        reverb[slope] = Value(reverb[slope] + val);
+        talkMIDI(0xB7 + slope, 0x5b, reverb[slope]);
+        tft.setCursor(455, 128 - (slope * 40));
+        Format(reverb[slope]);
+        tft.print(reverb[slope]);
+        DrawValue(reverb[slope], 128 - (slope * 40));
+      }
+      if (rotMode[slope] == 2) {
+        pan[slope] = Value(pan[slope] + val);
+        talkMIDI(0xB7 + slope, 0x0A, pan[slope]);
+        tft.setCursor(455, 138 - (slope * 40));
+        Format(pan[slope] - 64);
+        tft.print(pan[slope] - 64);
+        DrawValuePan(pan[slope], 138 - (slope * 40));
+      }
+      lastPosition[slope] = currentPosition[slope];
+      val = 0;
+    }
+  }
+}
+int Value(int value) {
+  if (value > 127) value = 127;
+  if (value < 0 ) value = 0;
+  return value;
+}
+void DrawValuePan(int value, int height) {
+  tft.drawFastVLine(320 + value, height, 6, TFT_WHITE);
+  tft.drawFastVLine(321 + value, height, 6, TFT_RED);
+  tft.drawFastVLine(322 + value, height, 6, TFT_WHITE);
 }

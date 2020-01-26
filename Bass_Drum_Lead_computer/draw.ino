@@ -28,6 +28,62 @@ void welcomeScreen() {
     if (slope == 0 || slope == 4 ? color = 1 : color = 0);
     ButtPat[slope].draw(tft, buttonColor[color]);
   }
+  CopyButton.draw(tft, buttonColor[0]);
+  PasteButton.draw(tft, buttonColor[0]);
+  tft.setCursor(320, 27);
+  tft.print("Drums");
+  tft.setCursor(320, 67);
+  tft.print("Bass");
+  tft.setCursor(320, 107);
+  tft.print("Melody");
+  tft.drawRect(320, 37, 129, 8, TFT_RED);
+  tft.drawRect(320, 47, 129, 8, TFT_WHITE);
+  tft.fillRect(320, 57, 129, 8, TFT_WHITE);
+  tft.drawRect(320, 77, 129, 8, TFT_RED);
+  tft.drawRect(320, 87, 129, 8, TFT_WHITE);
+  tft.fillRect(320, 97, 129, 8, TFT_WHITE);
+  tft.drawRect(320, 117, 129, 8, TFT_RED);
+  tft.drawRect(320, 127, 129, 8, TFT_WHITE);
+  tft.fillRect(320, 137, 129, 8, TFT_WHITE);
+
+  tft.setCursor(455, 38);
+  Format(Vol[2]);
+  tft.print(Vol[2]);
+  DrawValue(Vol[2], 38);
+  tft.setCursor(455, 78);
+  Format(Vol[1]);
+  tft.print(Vol[1]);
+  DrawValue(Vol[1], 78);
+  tft.setCursor(455, 118);
+  Format(Vol[0]);
+  tft.print(Vol[0]);
+  DrawValue(Vol[0], 118);
+
+  tft.setCursor(455, 48);
+  Format(reverb[2]);
+  tft.print(reverb[2]);
+  DrawValue(reverb[2], 48);
+  tft.setCursor(455, 88);
+  Format(reverb[1]);
+  tft.print(reverb[1]);
+  DrawValue(reverb[1], 88);
+  tft.setCursor(455, 128);
+  Format(reverb[0]);
+  tft.print(reverb[0]);
+  DrawValue(reverb[0], 128);
+
+  tft.setCursor(455, 58);
+  Format(pan[2] - 64);
+  tft.print(pan[2] - 64);
+  DrawValuePan(pan[2], 58);
+  tft.setCursor(455, 98);
+  Format(pan[1] - 64);
+  tft.print(pan[1] - 64);
+  DrawValuePan(pan[1], 98);
+  tft.setCursor(455, 138);
+  Format(pan[0] - 64);
+  tft.print(pan[0] - 64);
+  DrawValuePan(pan[0], 138);
 }
 void drawRec() {
   tft.fillRect((stp) * 16 + 7, 254, 14, 17, TFT_BLUE);

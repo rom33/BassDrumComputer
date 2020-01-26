@@ -41,18 +41,20 @@ TouchScreen_kbv myTouch = TouchScreen_kbv(XP, YP, XM, YM, 300);
 TSPoint_kbv tp;
 
 // *** rotary encoders
-const int CLK1 = 22;  // CLK PIN rotary encoder
-const int rotButton1 = 23;
-const int rotButton2 = 25;
-const int rotButton3 = 27;
-const int DT1 = 24;  // DT PIN rotary encoder
-const int CLK2 = 26;
-const int DT2 = 28;
-const int CLK3 = 30;
-const int DT3 = 32;
+const int CLK[] = {22,26,30};  // CLK PIN rotary encoder
+const int DT[] = {24,28,32};  // DT PIN rotary encoder
+const int rotButton[] = {23,25,27};
+int lastPosition[3], currentPosition[3];
+int reverb[] = {12 ,12, 12};
+int pan[] = {64, 64, 64};
+int Vol[] = {100, 100, 100};
+int rotMode[3];
 
 // *** some MACROS
 #define DRAW(Colour) if (tool ? color = TFT_BLUE : color = Colour);tft.fillRect(xDraw, yDraw, 5 , 7, color);
+#define DrawValue(value,height) tft.fillRect(321,height,value,6,TFT_GREEN);tft.fillRect(321+value,height,127-value,6,TFT_BLUE);
+#define Format(space) if(space<100&&space>=-9)tft.print(" ");if(space<10&&space>=0)tft.print(" ");
+#define DrawValue(value,height) tft.fillRect(321,height,value,6,TFT_GREEN);tft.fillRect(321+value,height,127-value,6,TFT_BLUE);
 
 // *** button declaraions
 Button ButtPat[] = {
@@ -115,15 +117,17 @@ Button keys[] =
   Button (TFT_WHITE, 26)
 };
 // *** variable
+int potRead1, potRead2, potRead3, val;
+bool pressed = false;
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte tog, toggle, rotMode1, rotMode2, rotMode3, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
+byte tog, toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
 bool play, tool;
 unsigned short instrument[4][13][16];
 unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, stp, slope, slope2, touched;
-unsigned short tick, tempo = 120, Vol1 = 100, Vol2 = 100, Vol3 = 100;
+unsigned short tick, tempo = 120;
 unsigned short instSet[3][13]={{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83},{35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46},{47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;
-unsigned long currentMillis, previousMillis;
+unsigned long currentMillis, previousMillis, currTime, prevTime;
 
 void setup()  {
   /*
@@ -143,15 +147,14 @@ void setup()  {
     SystemCoreClockUpdate();*/
 
   // *** rotary encoders
-  pinMode (CLK1, INPUT);
-  pinMode (DT1, INPUT);
-  pinMode (CLK2, INPUT);
-  pinMode (DT2, INPUT);
-  pinMode (CLK3, INPUT);
-  pinMode (DT3, INPUT);
-  pinMode (rotButton1, INPUT);
-  pinMode (rotButton2, INPUT);
-  pinMode (rotButton3, INPUT);
+for(slope=0;slope<3;slope++){
+  pinMode (CLK[slope], INPUT);
+  pinMode (DT[slope], INPUT);
+  pinMode (rotButton[slope], INPUT);
+  digitalWrite(rotButton[slope], true);
+  digitalWrite(CLK[slope], true);
+  digitalWrite(DT[slope], true);
+}
   // *** touch
   pinMode(A8, INPUT);
   pinMode(A9, INPUT);
@@ -162,18 +165,8 @@ void setup()  {
   pinMode(VS_XCS, OUTPUT);
   pinMode(VS_XDCS, OUTPUT);
   pinMode(VS_RESET, OUTPUT);
-  // *** rotary encoders
-  digitalWrite(rotButton1, true);
-  digitalWrite(rotButton2, true);
-  digitalWrite(rotButton3, true);
-  digitalWrite(CLK1, true);
-  digitalWrite(DT1, true);
-  digitalWrite(CLK2, true);
-  digitalWrite(DT2, true);
-  digitalWrite(CLK3, true);
-  digitalWrite(DT3, true);
   // *** vs1053
-  digitalWrite(VS_XCS, true); //Deselect Controltft.cursorToXY
+  digitalWrite(VS_XCS, true); //Deselect Control
   digitalWrite(VS_XDCS, true); //Deselect Data
   digitalWrite(VS_RESET, true);
   delay(20);
@@ -193,15 +186,15 @@ void setup()  {
   //  VSLoadUserCode();
   //  VSWriteRegister(0x1e03, 0xff, 0xff);
   talkMIDI(0xB9, 0, 0x7F);  //Bank select drums. midi cannel 10
-  talkMIDI(0xB9, 0x07, Vol3);//0x07 is channel message, set channel volume to near max (127)
+  talkMIDI(0xB9, 0x07, Vol[2]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB8, 0, 0x00); //Default bank GM1
   talkMIDI(0xC8, 0, 0); //Set instrument number. 0xC8 is a 1 data byte command
-  talkMIDI(0xB8, 0x07, Vol2);//0x07 is channel message, set channel volume to near max (127)
+  talkMIDI(0xB8, 0x07, Vol[1]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB7, 0, 0x00); //Default bank GM1
   talkMIDI(0xC7, 0, 0); //Set instrument number. 0xC7 is a 1 data byte command
-  talkMIDI(0xB7, 0x07, Vol1);//0x07 is channel message, set channel volume to near max (127)
+  talkMIDI(0xB7, 0x07, Vol[0]);//0x07 is channel message, set channel volume to near max (127)
 
   // *** display begin
   tft.init();
