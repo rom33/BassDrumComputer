@@ -1,11 +1,27 @@
 void readTouch() {
   currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    tog += 1;
+    if (toggle > 0 && play) {
+      tool = !tool;
+      switch (toggle) {
+        case 1:
+          ButtPat[patRow1].draw(tft, buttonColor[tool]);
+          break;
+        case 2:
+          ButtPat[patRow2 + 4].draw(tft, buttonColor[tool]);
+          break;
+        case 3:
+          ButtInst[instSelect].draw(tft, buttonColor[tool]);
+          break;
+      }
+      tog = 1;
+    }
     buttonReverse();
     // *** get touch point
     tp = myTouch.getPoint();
     if (tp.z > MINPRESSURE) {
-      previousMillis = currentMillis;
       tp = myTouch.getPoint();
       xx = map(tp.x, TS_MINX, TS_MAXX, 480, 0);
       yy = map(tp.y, TS_MINY, TS_MAXY, 320, 0);
@@ -24,57 +40,67 @@ void readTouch() {
       for (slope = 0; slope < 12; slope++)//play note
       {
         if (keys[slope].contains (xx, yy)) {
-          if (instSelect == 0) noteOn(9, drumSet[slope], 60);
-          if (instSelect == 1) noteOn(0, bassSet[slope], 60);
-          if (instSelect == 2) noteOn(1, leadSet[slope], 60);
+          noteOn(9 - instSelect, instSet[instSelect][slope], 60);
           return;
         }
       }
       // *** start stop touched?
       if (StartStopButton.contains(xx, yy)) {
         play = !play;
-        StartStopButton.draw(tft, buttonColor[1]);
-        touched = 10;
+        StartStopButton.draw(tft, buttonColor[play]);
         return;
       }
       // **** rewind button?
       if (Rewind.contains(xx, yy))
       {
-        Rewind.draw(tft, buttonColor[1] && tick != 0);
-        stp = tick - 1;// + (!play * 1);
-        tick = 0;
+        Rewind.draw(tft, buttonColor[1]);
         touched = 9;
-        drawRec();
-        return;
+        if (tick > 0) {
+          stp = tick - 1;
+          tick = 0;
+          drawRec();
+          return;
+        }
       }
       // *** pattern select
-      for (slope = 0; slope < 4; slope++) {
-        if (ButtPat[slope].contains (xx, yy)) {
-          patRow1Old = patRow1;
-          patRow1 = slope;
-          nextPat = patRow1 + patRow2 * 4;
-          ButtPat[patRow1Old].draw(tft, buttonColor[0]);
-          ButtPat[patRow1].draw(tft, buttonColor[1]);
-          return;
+      if (toggle == 0) {
+        for (slope = 0; slope < 4; slope++) {
+          if (ButtPat[slope].contains (xx, yy)) {
+            patRow1Old = patRow1;
+            patRow1 = slope;
+            if (patRow1 != patRow1Old) {
+              nextPat = patRow1 + patRow2 * 4;
+              tog = tool = 1;
+              ButtPat[patRow1].draw(tft, buttonColor[tool]);
+              toggle = 1;
+              return;
+            }
+          }
         }
-      }
-      for (slope = 0; slope < 4; slope++) {
-        if (ButtPat[slope + 4].contains (xx, yy)) {
-          patRow2Old = patRow2;
-          patRow2 = slope;
-          nextPat = patRow1 + patRow2 * 4;
-          ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
-          ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
-          return;
+        for (slope = 0; slope < 4; slope++) {
+          if (ButtPat[slope + 4].contains (xx, yy)) {
+            patRow2Old = patRow2;
+            patRow2 = slope;
+            if (patRow2 != patRow2Old) {
+              nextPat = patRow1 + patRow2 * 4;
+              tog = tool = 1;
+              ButtPat[patRow2 + 4].draw(tft, buttonColor[tool]);
+              toggle = 2;
+              return;
+            }
+          }
         }
-      }
-      for (slope = 0; slope < 3; slope++) {
-        if (ButtInst[slope].contains (xx, yy)) {
-          instSelectOld = instSelect;
-          instSelect = slope;
-          ButtInst[instSelectOld].draw(tft, buttonColor[0]);
-          ButtInst[instSelect].draw(tft, buttonColor[1]);
-          return;
+        for (slope = 0; slope < 3; slope++) {
+          if (ButtInst[slope].contains (xx, yy)) {
+            instSelectOld = instSelect;
+            instSelect = slope;
+            if (instSelect != instSelectOld) {
+              tog = tool = 1;
+              ButtInst[instSelect].draw(tft, buttonColor[tool]);
+              toggle = 3;
+              return;
+            }
+          }
         }
       }
     }// end of touch
@@ -105,9 +131,6 @@ void buttonReverse() {
         break;
       case 9:
         Rewind.draw(tft, buttonColor[0]);
-        break;
-      case 10:
-        StartStopButton.draw(tft, buttonColor[0]);
         break;
       case 17:
         TempMinusButton.draw(tft, buttonColor[0]);
