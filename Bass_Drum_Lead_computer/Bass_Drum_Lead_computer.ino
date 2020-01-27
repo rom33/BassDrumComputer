@@ -123,7 +123,7 @@ unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
 byte tog, toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
 bool play, tool;
 unsigned short instrument[4][13][16];
-unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, stp, slope, slope2, touched;
+unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, pasteTo, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120;
 unsigned short instSet[3][13]={{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83},{35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46},{47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;

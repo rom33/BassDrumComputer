@@ -21,6 +21,10 @@ void welcomeScreen() {
   // *** draw buttons
   StartStopButton.draw(tft, buttonColor[0]);
   Rewind.draw(tft, buttonColor[0]);
+  TempMinusButton.draw(tft, buttonColor[0]);
+  TempPlusButton.draw(tft, buttonColor[0]);
+  CopyButton.draw(tft, buttonColor[0]);
+  PasteButton.draw(tft, buttonColor[0]);  
   ButtInst[0].draw(tft, buttonColor[1]);
   ButtInst[1].draw(tft, buttonColor[0]);
   ButtInst[2].draw(tft, buttonColor[0]);
@@ -28,8 +32,6 @@ void welcomeScreen() {
     if (slope == 0 || slope == 4 ? color = 1 : color = 0);
     ButtPat[slope].draw(tft, buttonColor[color]);
   }
-  CopyButton.draw(tft, buttonColor[0]);
-  PasteButton.draw(tft, buttonColor[0]);
   tft.setCursor(320, 27);
   tft.print("Drums");
   tft.setCursor(320, 67);
@@ -84,6 +86,9 @@ void welcomeScreen() {
   Format(pan[0] - 64);
   tft.print(pan[0] - 64);
   DrawValuePan(pan[0], 138);
+  
+  tft.setCursor(361, 150 );
+  tft.print(tempo);
 }
 void drawRec() {
   tft.fillRect((stp) * 16 + 7, 254, 14, 17, TFT_BLUE);

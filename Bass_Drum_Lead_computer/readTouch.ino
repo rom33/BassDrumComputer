@@ -27,6 +27,40 @@ void readTouch() {
       xx = map(tp.x, TS_MINX, TS_MAXX, 480, 0);
       yy = map(tp.y, TS_MINY, TS_MAXY, 320, 0);
       // *** raster touch?
+    if (CopyButton.contains(xx, yy)) //copy pattern
+    {
+      CopyButton.draw(tft,buttonColor[1]);
+      copyPat = pat;
+      touched = 13;
+      return;
+    }
+    if (PasteButton.contains(xx, yy)) //paste pattern
+    {
+      nextPat = copyPat;
+      drawPattern();
+      patCopy();
+      PasteButton.draw(tft,buttonColor[1]);
+      touched=14;
+      return;
+    }    
+    if (TempMinusButton.contains(xx, yy)) { //tempo buttons
+        tempo -= 1;
+        tft.setCursor(361, 150 );
+        Format(tempo);
+        tft.print(tempo);
+        TempMinusButton.draw(tft,buttonColor[1]);
+        touched=10;
+        return;
+    }
+    if (TempPlusButton.contains(xx, yy)) { //tempo buttons
+        tempo += 1;
+        tft.setCursor(361, 150 );
+        Format(tempo);
+        tft.print(tempo);
+        TempPlusButton.draw(tft,buttonColor[1]);
+        touched=11;
+        return;
+    }    
       if ( xx > 6 && xx < 261 && yy > 6 && yy < 257) {
         stp = abs((xx - 5) / 16);
         note = 12 - (abs((yy - 5) / 19));
@@ -133,25 +167,25 @@ void buttonReverse() {
       case 9:
         Rewind.draw(tft, buttonColor[0]);
         break;
-      case 17:
+      case 10:
         TempMinusButton.draw(tft, buttonColor[0]);
         break;
-      case 16:
+      case 11:
         TempPlusButton.draw(tft, buttonColor[0]);
         break;
-      case 11:
+      case 12:
         ClearButton.draw(tft, buttonColor[0]);
         break;
-      case 12:
-        CopyButton.draw(tft, buttonColor[0]);
-        break;
       case 13:
-        ScrollUp.draw(tft, buttonColor[0]);
+        CopyButton.draw(tft, buttonColor[0]);
         break;
       case 14:
         PasteButton.draw(tft, buttonColor[0]);
         break;
       case 15:
+        ScrollUp.draw(tft, buttonColor[0]);
+        break;
+      case 16:
         ScrollDown.draw(tft, buttonColor[0]);
         break;
     }
@@ -161,10 +195,8 @@ void buttonReverse() {
 void readRot() {
   for (slope = 0; slope < 3; slope++) {
     currentPosition[slope] = digitalRead(CLK[slope]);
-  }
-  currTime = millis();
-  if (currTime - prevTime >= interval * 3) pressed = false;
-  for (slope = 0; slope < 3; slope++) {
+    currTime = millis();
+    if (currTime - prevTime >= interval * 3) pressed = false;
     if (!digitalRead(rotButton[slope]) && !pressed)
     {
       rotMode[slope] += 1;
@@ -187,8 +219,6 @@ void readRot() {
       prevTime = currTime;
       pressed = true;
     }
-  }
-  for (slope = 0; slope < 3; slope++) {
     if (currentPosition[slope] != lastPosition[slope]) {
       (digitalRead(DT[slope]) != currentPosition[slope]) ? val++ : val--;
       if (rotMode[slope] == 0) {
