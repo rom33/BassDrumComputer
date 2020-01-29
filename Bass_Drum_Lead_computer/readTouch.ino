@@ -26,41 +26,67 @@ void readTouch() {
       tp = myTouch.getPoint();
       xx = map(tp.x, TS_MINX, TS_MAXX, 480, 0);
       yy = map(tp.y, TS_MINY, TS_MAXY, 320, 0);
-      // *** raster touch?
-    if (CopyButton.contains(xx, yy)) //copy pattern
-    {
-      CopyButton.draw(tft,buttonColor[1]);
-      copyPat = pat;
-      touched = 13;
-      return;
-    }
-    if (PasteButton.contains(xx, yy)) //paste pattern
-    {
-      nextPat = copyPat;
-      drawPattern();
-      patCopy();
-      PasteButton.draw(tft,buttonColor[1]);
-      touched=14;
-      return;
-    }    
-    if (TempMinusButton.contains(xx, yy)) { //tempo buttons
+      // *** save touched?
+      if (SaveButton.contains(xx, yy))
+      {
+        savePat();
+        SaveButton.draw(tft, buttonColor[1]);
+        touched = 6;
+        return;
+      }
+      // *** clear touched?
+      if (ClearButton.contains(xx, yy)) {
+        for (slope = 0; slope < 13; slope++) {
+          instrument[instSelect][slope][16] = instrument[instSelect][slope][pat];
+          instrument[instSelect][slope][pat] = 0;
+        }
+        nextPat = pat;
+        pat = 16;
+        drawPattern();
+        ClearButton.draw(tft, buttonColor[1]);
+        touched = 12;
+      }
+      // *** copy touched?
+      if (CopyButton.contains(xx, yy))
+      {
+        CopyButton.draw(tft, buttonColor[1]);
+        copyPat = pat;
+        return;
+      }
+      // *** paste touched?
+      if (PasteButton.contains(xx, yy))
+      {
+        nextPat = copyPat;
+        for (slope = 0; slope < 13; slope++) {
+          instrument[instSelect][slope][pat] = instrument[instSelect][slope][nextPat];
+        }
+        drawPattern();
+        PasteButton.draw(tft, buttonColor[1]);
+        touched = 13;
+        pat = 16;
+        return;
+      }
+      // *** tempo minus touched?
+      if (TempMinusButton.contains(xx, yy)) {
         tempo -= 1;
         tft.setCursor(361, 150 );
         Format(tempo);
         tft.print(tempo);
-        TempMinusButton.draw(tft,buttonColor[1]);
-        touched=10;
+        TempMinusButton.draw(tft, buttonColor[1]);
+        touched = 10;
         return;
-    }
-    if (TempPlusButton.contains(xx, yy)) { //tempo buttons
+      }
+      // *** tempo plus touched?
+      if (TempPlusButton.contains(xx, yy)) {
         tempo += 1;
         tft.setCursor(361, 150 );
         Format(tempo);
         tft.print(tempo);
-        TempPlusButton.draw(tft,buttonColor[1]);
-        touched=11;
+        TempPlusButton.draw(tft, buttonColor[1]);
+        touched = 11;
         return;
-    }    
+      }
+      // *** raster touch?
       if ( xx > 6 && xx < 261 && yy > 6 && yy < 257) {
         stp = abs((xx - 5) / 16);
         note = 12 - (abs((yy - 5) / 19));
@@ -125,6 +151,7 @@ void readTouch() {
             }
           }
         }
+        // *** instrument select touched?
         for (slope = 0; slope < 3; slope++) {
           if (ButtInst[slope].contains (xx, yy)) {
             instSelectOld = instSelect;
@@ -178,14 +205,12 @@ void buttonReverse() {
         break;
       case 13:
         CopyButton.draw(tft, buttonColor[0]);
-        break;
-      case 14:
         PasteButton.draw(tft, buttonColor[0]);
         break;
-      case 15:
+      case 14:
         ScrollUp.draw(tft, buttonColor[0]);
         break;
-      case 16:
+      case 15:
         ScrollDown.draw(tft, buttonColor[0]);
         break;
     }
