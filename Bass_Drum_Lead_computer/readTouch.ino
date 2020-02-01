@@ -3,7 +3,6 @@ void readTouch() {
   currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
-    tog += 1;
     if (toggle > 0 && play) {
       tool = !tool;
       switch (toggle) {
@@ -17,7 +16,6 @@ void readTouch() {
           ButtInst[instSelect].draw(tft, buttonColor[tool]);
           break;
       }
-      tog = 1;
     }
     buttonReverse();
     // *** get touch point
@@ -44,6 +42,9 @@ void readTouch() {
         pat = 16;
         drawPattern();
         ClearButton.draw(tft, buttonColor[1]);
+        for (slope = 0; slope < 13; slope++) {
+          instrument[instSelect][slope][16] = 0;
+        }
         touched = 12;
       }
       // *** copy touched?
@@ -56,9 +57,8 @@ void readTouch() {
       // *** paste touched?
       if (PasteButton.contains(xx, yy))
       {
-        nextPat = copyPat;
         for (slope = 0; slope < 13; slope++) {
-          instrument[instSelect][slope][pat] = instrument[instSelect][slope][nextPat];
+          instrument[instSelect][slope][nextPat] = instrument[instSelect][slope][copyPat];
         }
         drawPattern();
         PasteButton.draw(tft, buttonColor[1]);
@@ -131,11 +131,10 @@ void readTouch() {
             patRow1 = slope;
             if (patRow1 != patRow1Old) {
               nextPat = patRow1 + patRow2 * 4;
-              tog = tool = 1;
-              ButtPat[patRow1].draw(tft, buttonColor[tool]);
+              ButtPat[patRow1].draw(tft, buttonColor[1]);
               toggle = 1;
-              return;
-            }
+              }
+            break;
           }
         }
         for (slope = 0; slope < 4; slope++) {
@@ -143,12 +142,12 @@ void readTouch() {
             patRow2Old = patRow2;
             patRow2 = slope;
             if (patRow2 != patRow2Old) {
+              pat = nextPat;
               nextPat = patRow1 + patRow2 * 4;
-              tog = tool = 1;
-              ButtPat[patRow2 + 4].draw(tft, buttonColor[tool]);
+              ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
               toggle = 2;
-              return;
-            }
+              }
+            break;
           }
         }
         // *** instrument select touched?
@@ -157,11 +156,10 @@ void readTouch() {
             instSelectOld = instSelect;
             instSelect = slope;
             if (instSelect != instSelectOld) {
-              tog = tool = 1;
-              ButtInst[instSelect].draw(tft, buttonColor[tool]);
+              ButtInst[instSelect].draw(tft, buttonColor[1]);
               toggle = 3;
-              return;
-            }
+              }
+            break;
           }
         }
       }

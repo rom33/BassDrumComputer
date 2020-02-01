@@ -41,11 +41,11 @@ TouchScreen_kbv myTouch = TouchScreen_kbv(XP, YP, XM, YM, 300);
 TSPoint_kbv tp;
 
 // *** rotary encoders
-const int CLK[] = {22,26,30};  // CLK PIN rotary encoder
-const int DT[] = {24,28,32};  // DT PIN rotary encoder
-const int rotButton[] = {23,25,27};
+const int CLK[] = {22, 26, 30}; // CLK PIN rotary encoder
+const int DT[] = {24, 28, 32}; // DT PIN rotary encoder
+const int rotButton[] = {23, 25, 27};
 int lastPosition[3], currentPosition[3];
-int reverb[] = {12 ,12, 12};
+int reverb[] = {12 , 12, 12};
 int pan[] = {64, 64, 64};
 int Vol[] = {100, 100, 100};
 int rotMode[3];
@@ -118,14 +118,14 @@ Button keys[] =
 };
 // *** variable
 int potRead1, potRead2, potRead3, val;
-bool pressed = false;
+bool pressed;
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte tog, toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
-bool play, tool, copy;
+byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
+bool play, tool;
 unsigned short instrument[4][13][17];
 unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120;
-unsigned short instSet[3][13]={{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83},{35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46},{47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
+unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;
 unsigned long currentMillis, previousMillis, currTime, prevTime;
 
@@ -147,14 +147,14 @@ void setup()  {
     SystemCoreClockUpdate();*/
 
   // *** rotary encoders
-for(slope=0;slope<3;slope++){
-  pinMode (CLK[slope], INPUT);
-  pinMode (DT[slope], INPUT);
-  pinMode (rotButton[slope], INPUT);
-  digitalWrite(rotButton[slope], true);
-  digitalWrite(CLK[slope], true);
-  digitalWrite(DT[slope], true);
-}
+  for (slope = 0; slope < 3; slope++) {
+    pinMode (CLK[slope], INPUT);
+    pinMode (DT[slope], INPUT);
+    pinMode (rotButton[slope], INPUT);
+    digitalWrite(rotButton[slope], true);
+    digitalWrite(CLK[slope], true);
+    digitalWrite(DT[slope], true);
+  }
   // *** touch
   pinMode(A8, INPUT);
   pinMode(A9, INPUT);
@@ -179,8 +179,8 @@ for(slope=0;slope<3;slope++){
   SPI.setClockDivider(50000); //Set SPI bus speed to 50K
 
   // *** Use serial for debugging
-  //  Serial.begin(9600);
-  //  Serial.println("VS1053 Shield Example");
+    Serial.begin(9600);
+    Serial.println("VS1053 Shield Example");
 
   // *** bank select
   //  VSLoadUserCode();
@@ -208,6 +208,11 @@ for(slope=0;slope<3;slope++){
   for (pat = 0; pat < 16; pat++) {
     readPat();
   }
+  pat = 16;
+  nextPat = 0;
+  drawPattern();
+  pat = nextPat;
+
   // *** scheduler begin
   Scheduler.startLoop(readTouch);
 }
@@ -224,19 +229,26 @@ void playNotes() {
     return;
   }
   if (tick > 15) {
+    DrawOrNot();
     tick = 0;
     stp = 15;
-    DrawOrNot();
   }
   if (tick > 0)
   {
     stp = tick - 1;
   }
+Serial.println(pat);
+Serial.println(nextPat);   
+Serial.println();
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if(instSelect!=instSelectOld){instSel=instSelectOld;}else{instSel=instSelect;}
+    if (instSelect != instSelectOld) {
+      instSel = instSelectOld;
+    } else {
+      instSel = instSelect;
+    }
     if ((instrument[instSel][slope][pat] >> tick) & (1)) {
-      noteOn(9-instSel, instSet[instSel][slope], 40 + (((instrument[instSel][12][pat] >> tick) & (1)) * 20));
+      noteOn(9 - instSel, instSet[instSel][slope], 40 + (((instrument[instSel][12][pat] >> tick) & (1)) * 20));
     }
   }
   tick += 1;
