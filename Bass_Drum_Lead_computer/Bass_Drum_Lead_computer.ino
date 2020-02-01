@@ -179,8 +179,8 @@ void setup()  {
   SPI.setClockDivider(50000); //Set SPI bus speed to 50K
 
   // *** Use serial for debugging
-    Serial.begin(9600);
-    Serial.println("VS1053 Shield Example");
+  //  Serial.begin(9600);
+  //  Serial.println("VS1053 Shield Example");
 
   // *** bank select
   //  VSLoadUserCode();
@@ -237,9 +237,6 @@ void playNotes() {
   {
     stp = tick - 1;
   }
-Serial.println(pat);
-Serial.println(nextPat);   
-Serial.println();
   drawRec();
   for (slope = 0; slope < 12; slope++) {
     if (instSelect != instSelectOld) {
