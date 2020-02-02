@@ -68,9 +68,19 @@ Button ButtPat[] = {
   Button(228, 300, 30, 20, "D")
 };
 Button ButtInst[] = {
-  Button(265, 300, 40, 20, "Drum"),
-  Button(265, 277, 40, 20, "Bass"),
-  Button(265, 254, 40, 20, "Leed"),
+  Button(265, 300, 35, 20, "Drum"),
+  Button(265, 277, 35, 20, "Bass"),
+  Button(265, 254, 35, 20, "Leed"),
+};
+Button ButtInstPlay[] = {
+  Button(305, 300, 15, 20, "P"),
+  Button(305, 277, 15, 20, "P"),
+  Button(305, 254, 15, 20, "P"),
+};
+Button LoopLen[] = {
+  Button(385, 250, 55, 25, "1 - 2"),
+  Button(385, 250, 55, 25, "1 - 3"),
+  Button(385, 250, 55, 25, "1 - 4"),
 };
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
@@ -121,8 +131,8 @@ Button keys[] =
 int potRead1, potRead2, potRead3, val;
 bool pressed;
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
-bool play, tool, loopMode;
+byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel, loopLen;
+bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
 unsigned short instrument[4][13][17];
 unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120;
@@ -213,6 +223,7 @@ void setup()  {
   nextPat = 0;
   drawPattern();
   pat = nextPat;
+  drumPlay = true;
 
   // *** scheduler begin
   Scheduler.startLoop(readTouch);
@@ -230,23 +241,23 @@ void playNotes() {
     return;
   }
   if (tick > 15) {
-    if(loopMode){
-    nextPat += 1;
-    patRow1Old = patRow1;
-    patRow1 += 1;
-    if(patRow2 != patRow2Old){
-      nextPat = 0 + patRow2 * 4;
-      patRow1 = 0;      
-      ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
-      ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
-      patRow2Old = patRow2;
-    }
-    if(nextPat > 3 + patRow2 * 4) {
-      nextPat = 0 + patRow2 * 4;
-      patRow1 = 0;
-    }
-    ButtPat[patRow1Old].draw(tft, buttonColor[0]);
-    ButtPat[patRow1].draw(tft, buttonColor[1]);
+    if (loopMode) {
+      nextPat += 1;
+      patRow1Old = patRow1;
+      patRow1 += 1;
+      if (patRow2 != patRow2Old) {
+        nextPat = 0 + patRow2 * 4;
+        patRow1 = 0;
+        ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
+        ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
+        patRow2Old = patRow2;
+      }
+      if (nextPat > loopLen + patRow2 * 4) {
+        nextPat = patRow2 * 4;
+        patRow1 = 0;
+      }
+      ButtPat[patRow1Old].draw(tft, buttonColor[0]);
+      ButtPat[patRow1].draw(tft, buttonColor[1]);
     }
     DrawOrNot();
     tick = 0;
@@ -263,8 +274,20 @@ void playNotes() {
     } else {
       instSel = instSelect;
     }
-    if ((instrument[instSel][slope][pat] >> tick) & (1)) {
-      noteOn(9 - instSel, instSet[instSel][slope], 40 + (((instrument[instSel][12][pat] >> tick) & (1)) * 20));
+    if (drumPlay) {
+      if ((instrument[0][slope][pat] >> tick) & (1)) {
+        noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
+      }
+    }
+    if (bassPlay) {
+      if ((instrument[1][slope][pat] >> tick) & (1)) {
+        noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
+      }
+    }
+    if (leadPlay) {
+      if ((instrument[2][slope][pat] >> tick) & (1)) {
+        noteOn(7, instSet[2][slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
+      }
     }
   }
   tick += 1;

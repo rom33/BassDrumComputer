@@ -46,7 +46,7 @@ void Button::draw(TFT_HX8357_Due tft, int colour)
 { 
   tft.fillRoundRect(m_x, m_y, m_width, m_height, 5, colour);
   tft.drawRoundRect(m_x, m_y, m_width, m_height, 5, TFT_WHITE);
-  tft.setCursor(m_x + 10 , m_y + m_height/2-4);
+  tft.setCursor(m_x + 6 , m_y + m_height/2-4);
   tft.setTextColor(TFT_WHITE);
   tft.println(m_caption);
 }

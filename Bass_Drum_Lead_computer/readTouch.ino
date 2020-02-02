@@ -32,11 +32,37 @@ void readTouch() {
         touched = 6;
         return;
       }
+      // *** track play touched?
+      for (slope = 0; slope < 4; slope++) {
+        if (ButtInstPlay[slope].contains (xx, yy)) {
+          switch (slope) {
+            case 0:
+              drumPlay = !drumPlay;
+              ButtInstPlay[0].draw(tft, buttonColor[drumPlay]);
+              break;
+            case 1:
+              bassPlay = !bassPlay;
+              ButtInstPlay[1].draw(tft, buttonColor[bassPlay]);
+              break;
+            case 2:
+              leadPlay = !leadPlay;
+              ButtInstPlay[2].draw(tft, buttonColor[leadPlay]);
+              break;
+          }
+        }
+      }
       // *** loop touched?
       if (LoopButton.contains(xx, yy)) {
         loopMode = !loopMode;
         LoopButton.draw(tft, buttonColor[loopMode]);
       }
+      // *** loop len touched?
+        if(LoopLen[0].contains(xx, yy)){
+          loopLen += 1;
+          if(loopLen > 3)loopLen=1;
+            LoopLen[loopLen-1].draw(tft, buttonColor[1]);
+            touched = 16;  
+          }
       // *** clear touched?
       if (ClearButton.contains(xx, yy)) {
         for (slope = 0; slope < 13; slope++) {
@@ -216,6 +242,9 @@ void buttonReverse() {
       case 15:
         ScrollDown.draw(tft, buttonColor[0]);
         break;
+      case 16:
+        LoopLen[loopLen-1].draw(tft, buttonColor[0]); 
+        break;  
     }
     touched = 0;
   }

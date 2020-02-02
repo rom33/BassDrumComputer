@@ -27,10 +27,14 @@ void welcomeScreen() {
   ClearButton.draw(tft,buttonColor[0]);
   SaveButton.draw(tft,buttonColor[0]);  
   PasteButton.draw(tft, buttonColor[0]);
-  LoopButton.draw(tft, buttonColor[0]);  
+  LoopButton.draw(tft, buttonColor[0]); 
+  LoopLen[0].draw(tft, buttonColor[0]); 
   ButtInst[0].draw(tft, buttonColor[1]);
   ButtInst[1].draw(tft, buttonColor[0]);
   ButtInst[2].draw(tft, buttonColor[0]);
+  ButtInstPlay[0].draw(tft, buttonColor[1]);
+  ButtInstPlay[1].draw(tft, buttonColor[0]);
+  ButtInstPlay[2].draw(tft, buttonColor[0]);
   for (slope = 0; slope < 8; slope++) {
     if (slope == 0 || slope == 4 ? color = 1 : color = 0);
     ButtPat[slope].draw(tft, buttonColor[color]);
