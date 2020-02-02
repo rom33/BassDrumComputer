@@ -32,6 +32,11 @@ void readTouch() {
         touched = 6;
         return;
       }
+      // *** loop touched?
+      if (LoopButton.contains(xx, yy)) {
+        loopMode = !loopMode;
+        LoopButton.draw(tft, buttonColor[loopMode]);
+      }
       // *** clear touched?
       if (ClearButton.contains(xx, yy)) {
         for (slope = 0; slope < 13; slope++) {
@@ -133,8 +138,8 @@ void readTouch() {
               nextPat = patRow1 + patRow2 * 4;
               ButtPat[patRow1].draw(tft, buttonColor[1]);
               toggle = 1;
-              }
-            break;
+            }
+            return;
           }
         }
         for (slope = 0; slope < 4; slope++) {
@@ -146,8 +151,8 @@ void readTouch() {
               nextPat = patRow1 + patRow2 * 4;
               ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
               toggle = 2;
-              }
-            break;
+            }
+            return;
           }
         }
         // *** instrument select touched?
@@ -158,8 +163,8 @@ void readTouch() {
             if (instSelect != instSelectOld) {
               ButtInst[instSelect].draw(tft, buttonColor[1]);
               toggle = 3;
-              }
-            break;
+            }
+            return;
           }
         }
       }

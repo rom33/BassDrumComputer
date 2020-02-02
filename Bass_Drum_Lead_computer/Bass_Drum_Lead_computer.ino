@@ -74,14 +74,15 @@ Button ButtInst[] = {
 };
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
-Button SongButton       = Button(320, 250, 115, 25, "Song  Mode");
-Button PatButton        = Button(320, 250, 115, 25, "Pat.  Mode");
-Button CopyButton       = Button(320, 220, 55, 25,  "CP");
-Button PasteButton      = Button(380, 220, 55, 25,  "PA");
-Button ClearButton      = Button(320, 190, 55, 25,  "CL");
-Button SaveButton       = Button(380, 190, 55, 25,  "SV");
-Button TempMinusButton  = Button(320, 160, 55, 25,  "--");
-Button TempPlusButton   = Button(380, 160, 55, 25,  "++");
+Button LoopButton       = Button(325, 250, 55, 25, "Loop");
+Button SongButton       = Button(325, 280, 115, 25, "Song  Mode");
+Button PatButton        = Button(325, 280, 115, 25, "Pat.  Mode");
+Button CopyButton       = Button(325, 220, 55, 25,  "CP");
+Button PasteButton      = Button(385, 220, 55, 25,  "PA");
+Button ClearButton      = Button(325, 190, 55, 25,  "CL");
+Button SaveButton       = Button(385, 190, 55, 25,  "SV");
+Button TempMinusButton  = Button(325, 160, 55, 25,  "--");
+Button TempPlusButton   = Button(385, 160, 55, 25,  "++");
 Button holeNote         = Button(440, 160, 40, 25,  " 1");
 Button halfNote         = Button(440, 190, 40, 25,  "1/2");
 Button quaterNote       = Button(440, 220, 40, 25,  "1/4");
@@ -121,7 +122,7 @@ int potRead1, potRead2, potRead3, val;
 bool pressed;
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
 byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel;
-bool play, tool;
+bool play, tool, loopMode;
 unsigned short instrument[4][13][17];
 unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120;
@@ -229,6 +230,24 @@ void playNotes() {
     return;
   }
   if (tick > 15) {
+    if(loopMode){
+    nextPat += 1;
+    patRow1Old = patRow1;
+    patRow1 += 1;
+    if(patRow2 != patRow2Old){
+      nextPat = 0 + patRow2 * 4;
+      patRow1 = 0;      
+      ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
+      ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
+      patRow2Old = patRow2;
+    }
+    if(nextPat > 3 + patRow2 * 4) {
+      nextPat = 0 + patRow2 * 4;
+      patRow1 = 0;
+    }
+    ButtPat[patRow1Old].draw(tft, buttonColor[0]);
+    ButtPat[patRow1].draw(tft, buttonColor[1]);
+    }
     DrawOrNot();
     tick = 0;
     stp = 15;

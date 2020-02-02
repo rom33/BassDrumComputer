@@ -26,7 +26,8 @@ void welcomeScreen() {
   CopyButton.draw(tft, buttonColor[0]);
   ClearButton.draw(tft,buttonColor[0]);
   SaveButton.draw(tft,buttonColor[0]);  
-  PasteButton.draw(tft, buttonColor[0]);  
+  PasteButton.draw(tft, buttonColor[0]);
+  LoopButton.draw(tft, buttonColor[0]);  
   ButtInst[0].draw(tft, buttonColor[1]);
   ButtInst[1].draw(tft, buttonColor[0]);
   ButtInst[2].draw(tft, buttonColor[0]);
@@ -88,7 +89,9 @@ void welcomeScreen() {
   Format(pan[0] - 64);
   tft.print(pan[0] - 64);
   DrawValuePan(pan[0], 138);
-  
+
+  tft.setCursor(385, 150 );
+  tft.print("bpm");  
   tft.setCursor(361, 150 );
   tft.print(tempo);
 }
@@ -105,7 +108,7 @@ void drawRec() {
 void drawPattern() {
   for (slope = 0; slope < 16; slope++) {
     for (slope2 = 0; slope2 < 13; slope2++) {
-      if ((instrument[instSelect][slope2][pat] & (1 << slope)) != (instrument[instSelectOld][slope2][nextPat] & (1 << slope))) {
+      if ((instrument[instSelectOld][slope2][pat] & (1 << slope)) != (instrument[instSelect][slope2][nextPat] & (1 << slope))) {
         tool = !(instrument[instSelect][slope2][nextPat] & (1 << slope));
         xDraw = slope * 16 + 12;
         yDraw = (12 - slope2) * 19 + 12;
