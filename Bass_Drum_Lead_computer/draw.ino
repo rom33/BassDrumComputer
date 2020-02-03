@@ -135,14 +135,12 @@ void DrawOrNot() {
     }
     pat = nextPat;
     toggle = 0;
-    return;
-  }
+    }
   if (instSelect != instSelectOld) {
     drawPattern();
     ButtInst[instSelectOld].draw(tft, buttonColor[0]);
     ButtInst[instSelect].draw(tft, buttonColor[1]);
     instSelectOld = instSelect;
     toggle = 0;
-    return;
-  }
+    }
 }

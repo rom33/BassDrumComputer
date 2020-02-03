@@ -224,6 +224,7 @@ void setup()  {
   drawPattern();
   pat = nextPat;
   drumPlay = true;
+  loopLen = 1;
 
   // *** scheduler begin
   Scheduler.startLoop(readTouch);
@@ -269,11 +270,7 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if (instSelect != instSelectOld) {
-      instSel = instSelectOld;
-    } else {
-      instSel = instSelect;
-    }
+    if (instSelect != instSelectOld) instSel = instSelectOld; else instSel = instSelect;
     if (drumPlay) {
       if ((instrument[0][slope][pat] >> tick) & (1)) {
         noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));

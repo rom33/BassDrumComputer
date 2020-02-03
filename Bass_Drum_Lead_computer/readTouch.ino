@@ -33,7 +33,7 @@ void readTouch() {
         return;
       }
       // *** track play touched?
-      for (slope = 0; slope < 4; slope++) {
+      for (slope = 0; slope < 3; slope++) {
         if (ButtInstPlay[slope].contains (xx, yy)) {
           switch (slope) {
             case 0:
@@ -156,8 +156,9 @@ void readTouch() {
       }
       // *** pattern select
       if (toggle == 0) {
-        for (slope = 0; slope < 4; slope++) {
-          if (ButtPat[slope].contains (xx, yy)) {
+        if(!loopMode){
+          for (slope = 0; slope < 4; slope++) {
+              if (ButtPat[slope].contains (xx, yy)) {
             patRow1Old = patRow1;
             patRow1 = slope;
             if (patRow1 != patRow1Old) {
@@ -167,6 +168,7 @@ void readTouch() {
             }
             return;
           }
+        }
         }
         for (slope = 0; slope < 4; slope++) {
           if (ButtPat[slope + 4].contains (xx, yy)) {
