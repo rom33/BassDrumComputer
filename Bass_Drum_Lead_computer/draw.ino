@@ -1,4 +1,7 @@
-void welcomeScreen() {
+void welcomeScreen(){
+
+}
+void patternScreen() {
   // *** draw raster
   for (int x = 5; x < 262; x += 16) {
     tft.drawFastVLine(x, 5, 268, TFT_WHITE);
@@ -24,11 +27,11 @@ void welcomeScreen() {
   TempMinusButton.draw(tft, buttonColor[0]);
   TempPlusButton.draw(tft, buttonColor[0]);
   CopyButton.draw(tft, buttonColor[0]);
-  ClearButton.draw(tft,buttonColor[0]);
-  SaveButton.draw(tft,buttonColor[0]);  
+  ClearButton.draw(tft, buttonColor[0]);
+  SaveButton.draw(tft, buttonColor[0]);
   PasteButton.draw(tft, buttonColor[0]);
-  LoopButton.draw(tft, buttonColor[0]); 
-  LoopLen[0].draw(tft, buttonColor[0]); 
+  LoopButton.draw(tft, buttonColor[0]);
+  LoopLen[0].draw(tft, buttonColor[0]);
   ButtInst[0].draw(tft, buttonColor[1]);
   ButtInst[1].draw(tft, buttonColor[0]);
   ButtInst[2].draw(tft, buttonColor[0]);
@@ -95,7 +98,7 @@ void welcomeScreen() {
   DrawValuePan(pan[0], 138);
 
   tft.setCursor(385, 150 );
-  tft.print("bpm");  
+  tft.print("bpm");
   tft.setCursor(361, 150 );
   tft.print(tempo);
 }
@@ -135,12 +138,28 @@ void DrawOrNot() {
     }
     pat = nextPat;
     toggle = 0;
-    }
+  }
   if (instSelect != instSelectOld) {
     drawPattern();
     ButtInst[instSelectOld].draw(tft, buttonColor[0]);
     ButtInst[instSelect].draw(tft, buttonColor[1]);
     instSelectOld = instSelect;
-    toggle = 0;
+  }
+  if (playtrack > 0) {
+    switch (playtrack) {
+      case 1:
+        drumPlay = !drumPlay;
+        ButtInstPlay[0].draw(tft, buttonColor[drumPlay]);
+        break;
+      case 2:
+        bassPlay = !bassPlay;
+        ButtInstPlay[1].draw(tft, buttonColor[bassPlay]);
+        break;
+      case 3:
+        leadPlay = !leadPlay;
+        ButtInstPlay[2].draw(tft, buttonColor[leadPlay]);
+        break;
     }
+  playtrack = toggle = 0;
+  }
 }

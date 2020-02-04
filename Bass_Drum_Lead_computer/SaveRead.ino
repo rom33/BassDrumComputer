@@ -21,3 +21,18 @@ void savePat() {
   }
   file.close();
 }
+void readCalibrate() {
+  String test;
+  file = SD.open("calibrate.txt");
+  if (file) {
+    test = file.readStringUntil('\n');
+    TS_MINX = test.toInt();
+    test = file.readStringUntil('\n');
+    TS_MAXX = test.toInt();
+    test = file.readStringUntil('\n');
+    TS_MINY = test.toInt();
+    test = file.readStringUntil('\n');
+    TS_MAXY = test.toInt();
+    file.close();
+  }else calibrate();
+}

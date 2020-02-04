@@ -28,7 +28,7 @@ Button::Button(int color, int keyy)
 }
 
 // The member function 'boolean contains(int tx, int ty)' checks to see if a given point is within 
-// one of the Octave buttons - i.e. if the button has been pressed.
+// one of the buttons has been pressed.
 boolean Button::contains(int tx, int ty)
 {
   if ((tx > m_x) && (tx < m_x + m_width))

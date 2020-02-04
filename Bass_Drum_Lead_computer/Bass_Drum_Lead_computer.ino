@@ -55,6 +55,8 @@ int rotMode[3];
 #define DrawValue(value,height) tft.fillRect(321,height,value,6,TFT_GREEN);tft.fillRect(321+value,height,127-value,6,TFT_BLUE);
 #define Format(space) if(space<100&&space>=-9)tft.print(" ");if(space<10&&space>=0)tft.print(" ");
 #define DrawValue(value,height) tft.fillRect(321,height,value,6,TFT_GREEN);tft.fillRect(321+value,height,127-value,6,TFT_BLUE);
+#define WaitTouch do{tp=myTouch.getPoint();}while(tp.z<MINPRESSURE);
+#define GetTouchPoints tp=myTouch.getPoint();xx=map(tp.x,TS_MINX,TS_MAXX,480,0);yy=map(tp.y,TS_MINY,TS_MAXY,320,0);
 
 // *** button declaraions
 Button ButtPat[] = {
@@ -128,17 +130,19 @@ Button keys[] =
   Button (TFT_WHITE, 26)
 };
 // *** variable
-int potRead1, potRead2, potRead3, val;
+int potRead1, potRead2, potRead3, val, rX[8], rY[8];
+int32_t clx, crx, cty, cby;
+float px, py;
 bool pressed;
 unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, instSel, loopLen;
+byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack;
 bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
-unsigned short instrument[4][13][17];
+unsigned short instrument[4][13][17], bassSound = 32, leadSound = 1;
 unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, touched;
 unsigned short tick, tempo = 120;
 unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;
-unsigned long currentMillis, previousMillis, currTime, prevTime;
+unsigned long currentMillis, previousMillis, currTime, prevTime, curMillis, prevMillis;
 
 void setup()  {
   /*
@@ -200,11 +204,11 @@ void setup()  {
   talkMIDI(0xB9, 0x07, Vol[2]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB8, 0, 0x00); //Default bank GM1
-  talkMIDI(0xC8, 0, 0); //Set instrument number. 0xC8 is a 1 data byte command
+  talkMIDI(0xC8, bassSound, 0); //Set instrument number. 0xC8 is a 1 data byte command
   talkMIDI(0xB8, 0x07, Vol[1]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB7, 0, 0x00); //Default bank GM1
-  talkMIDI(0xC7, 0, 0); //Set instrument number. 0xC7 is a 1 data byte command
+  talkMIDI(0xC7, leadSound, 0); //Set instrument number. 0xC7 is a 1 data byte command
   talkMIDI(0xB7, 0x07, Vol[0]);//0x07 is channel message, set channel volume to near max (127)
 
   // *** display begin
@@ -216,6 +220,9 @@ void setup()  {
 
   // *** card-reader begin
   SD.begin(CS_PIN);
+
+  readCalibrate();
+  patternScreen();
   for (pat = 0; pat < 16; pat++) {
     readPat();
   }
@@ -232,12 +239,15 @@ void setup()  {
 
 void loop() {
   while (1) {
+    VSWriteRegister(0x0B, analogRead(A8) / 16, analogRead(A9) / 16); // Master Vol control left right
     playNotes();
     delay(250 * 60 / tempo);
   }
 }
 void playNotes() {
   if (!play) {
+    talkMIDI(0xB7, 0x7b, 127); //all notes channel 1 off
+    talkMIDI(0xB8, 0x7b, 127); //all notes channel 2 off
     DrawOrNot();
     return;
   }
@@ -270,7 +280,6 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if (instSelect != instSelectOld) instSel = instSelectOld; else instSel = instSelect;
     if (drumPlay) {
       if ((instrument[0][slope][pat] >> tick) & (1)) {
         noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
