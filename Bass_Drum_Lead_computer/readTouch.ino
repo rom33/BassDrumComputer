@@ -81,7 +81,7 @@ void readTouch() {
       // *** tempo minus touched?
       if (TempMinusButton.contains(xx, yy)) {
         tempo -= 1;
-        tft.setCursor(361, 150 );
+        tft.setCursor(400, 150 );
         Format(tempo);
         tft.print(tempo);
         TempMinusButton.draw(tft, buttonColor[1]);
@@ -91,7 +91,7 @@ void readTouch() {
       // *** tempo plus touched?
       if (TempPlusButton.contains(xx, yy)) {
         tempo += 1;
-        tft.setCursor(361, 150 );
+        tft.setCursor(400, 150 );
         Format(tempo);
         tft.print(tempo);
         TempPlusButton.draw(tft, buttonColor[1]);

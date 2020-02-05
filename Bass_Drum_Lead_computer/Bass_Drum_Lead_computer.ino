@@ -70,36 +70,36 @@ Button ButtPat[] = {
   Button(228, 300, 30, 20, "D")
 };
 Button ButtInst[] = {
-  Button(265, 300, 35, 20, "Drum"),
-  Button(265, 277, 35, 20, "Bass"),
-  Button(265, 254, 35, 20, "Leed"),
+  Button(265, 300, 32, 20, "Drum"),
+  Button(265, 277, 32, 20, "Bass"),
+  Button(265, 254, 32, 20, "Leed"),
 };
 Button ButtInstPlay[] = {
-  Button(305, 300, 15, 20, "P"),
-  Button(305, 277, 15, 20, "P"),
-  Button(305, 254, 15, 20, "P"),
+  Button(300, 300, 15, 20, "P"),
+  Button(300, 277, 15, 20, "P"),
+  Button(300, 254, 15, 20, "P"),
 };
 Button LoopLen[] = {
-  Button(385, 250, 55, 25, "1 - 2"),
-  Button(385, 250, 55, 25, "1 - 3"),
-  Button(385, 250, 55, 25, "1 - 4"),
+  Button(425, 250, 55, 25, "1 - 2"),
+  Button(425, 250, 55, 25, "1 - 3"),
+  Button(425, 250, 55, 25, "1 - 4"),
 };
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
-Button LoopButton       = Button(325, 250, 55, 25, "Loop");
-Button SongButton       = Button(325, 280, 115, 25, "Song  Mode");
-Button PatButton        = Button(325, 280, 115, 25, "Pat.  Mode");
-Button CopyButton       = Button(325, 220, 55, 25,  "CP");
-Button PasteButton      = Button(385, 220, 55, 25,  "PA");
-Button ClearButton      = Button(325, 190, 55, 25,  "CL");
-Button SaveButton       = Button(385, 190, 55, 25,  "SV");
-Button TempMinusButton  = Button(325, 160, 55, 25,  "--");
-Button TempPlusButton   = Button(385, 160, 55, 25,  "++");
-Button holeNote         = Button(440, 160, 40, 25,  " 1");
-Button halfNote         = Button(440, 190, 40, 25,  "1/2");
-Button quaterNote       = Button(440, 220, 40, 25,  "1/4");
-Button eighthNote       = Button(440, 250, 40, 25,  "1/8");
-Button sixteenthNote    = Button(440, 280, 40, 25,  "1/16");
+Button LoopButton       = Button(365, 250, 55, 25, "Loop");
+Button SongButton       = Button(365, 280, 115, 25, "Song  Mode");
+Button PatButton        = Button(365, 280, 115, 25, "Pat.  Mode");
+Button CopyButton       = Button(365, 220, 55, 25,  "CP");
+Button PasteButton      = Button(425, 220, 55, 25,  "PA");
+Button ClearButton      = Button(365, 190, 55, 25,  "CL");
+Button SaveButton       = Button(425, 190, 55, 25,  "SV");
+Button TempMinusButton  = Button(365, 160, 55, 25,  "--");
+Button TempPlusButton   = Button(425, 160, 55, 25,  "++");
+Button holeNote         = Button(320, 175, 35, 25,  " 1");
+Button halfNote         = Button(320, 205, 35, 25,  "1/2");
+Button quaterNote       = Button(320, 235, 35, 25,  "1/4");
+Button eighthNote       = Button(320, 265, 35, 25,  "1/8");
+Button sixteenthNote    = Button(320, 295, 35, 25,  "1/16");
 Button Setup            = Button(320, 3, 115, 20,  "Setup");
 Button ScrollUp         = Button(320, 220, 55, 25, "Up");
 Button ScrollDown       = Button(380, 220, 55, 25, "Dn");
@@ -239,7 +239,11 @@ void setup()  {
 
 void loop() {
   while (1) {
+    talkMIDI(0xB7, 0x7b, 127); //all notes channel 7 off
+    talkMIDI(0xB8, 0x7b, 127); //all notes channel 8 off
     VSWriteRegister(0x0B, analogRead(A8) / 16, analogRead(A9) / 16); // Master Vol control left right
+    talkMIDI(0xB0, 0x0c, analogRead(A11) / 8); // effect control 1 (sets global reverb decay)
+    talkMIDI(0xB0, 0x26, analogRead(A10) / 8); // RPN LSB: 0 = bend range
     playNotes();
     delay(250 * 60 / tempo);
   }

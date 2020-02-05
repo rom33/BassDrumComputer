@@ -1,4 +1,4 @@
-void welcomeScreen(){
+void welcomeScreen() {
 
 }
 void patternScreen() {
@@ -31,6 +31,11 @@ void patternScreen() {
   SaveButton.draw(tft, buttonColor[0]);
   PasteButton.draw(tft, buttonColor[0]);
   LoopButton.draw(tft, buttonColor[0]);
+  holeNote.draw(tft, TFT_MAGENTA);
+  halfNote.draw(tft, TFT_YELLOW);
+  quaterNote.draw(tft, TFT_CYAN);
+  eighthNote.draw(tft, TFT_GREEN);
+  sixteenthNote.draw(tft, buttonColor[1]);
   LoopLen[0].draw(tft, buttonColor[0]);
   ButtInst[0].draw(tft, buttonColor[1]);
   ButtInst[1].draw(tft, buttonColor[0]);
@@ -97,9 +102,9 @@ void patternScreen() {
   tft.print(pan[0] - 64);
   DrawValuePan(pan[0], 138);
 
-  tft.setCursor(385, 150 );
+  tft.setCursor(425, 150 );
   tft.print("bpm");
-  tft.setCursor(361, 150 );
+  tft.setCursor(400, 150 );
   tft.print(tempo);
 }
 void drawRec() {
@@ -160,6 +165,6 @@ void DrawOrNot() {
         ButtInstPlay[2].draw(tft, buttonColor[leadPlay]);
         break;
     }
-  playtrack = toggle = 0;
+    playtrack = toggle = 0;
   }
 }
