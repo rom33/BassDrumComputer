@@ -40,7 +40,9 @@
 */
 void sendMIDI(byte data)
 {
-  SPI.transfer(0x00);
+  delayMicroseconds(10);
+  SPI.transfer(0);
+  delayMicroseconds(10);  
   SPI.transfer(data);
 }
 //Plays a MIDI note. Doesn't check to see that cmd is greater than 127, or that data values are less than 127
@@ -48,8 +50,8 @@ void talkMIDI(byte cmd, byte data1, byte data2) {
   //
   // Wait for chip to be ready (Unlikely to be an issue with real time MIDI)
   //
-  //  SPI.beginTransaction(vs1053);
   while (!digitalRead(VS_DREQ));
+  delayMicroseconds(10);
   digitalWrite(VS_XDCS, LOW);
   sendMIDI(cmd);
   //Some commands only have one data byte. All cmds less than 0xBn have 2 data bytes
@@ -61,7 +63,7 @@ void talkMIDI(byte cmd, byte data1, byte data2) {
     sendMIDI(data1);
   }
   digitalWrite(VS_XDCS, HIGH);
-  //  SPI.endTransaction();
+  delayMicroseconds(10);
 }
 //Send a MIDI note-on message.  Like pressing a piano key
 //channel ranges from 0-15
@@ -73,11 +75,11 @@ void noteOff(byte channel, byte note, byte release_velocity) {
   talkMIDI( (0x80 | channel), note, release_velocity);
 }
 //Write to VS10xx register
-//SCI: Data transfers are always 16bit. When a new SCI operation comes in 
+//SCI: Data transfers are always 16bit. When a new SCI operation comes in
 //DREQ goes low. We then have to wait for DREQ to go high again.
 //XCS should be low for the full duration of operation.
-void VSWriteRegister(unsigned char addressbyte, unsigned char highbyte, unsigned char lowbyte){
-  while(!digitalRead(VS_DREQ)) ; //Wait for DREQ to go high indicating IC is available
+void VSWriteRegister(unsigned char addressbyte, unsigned char highbyte, unsigned char lowbyte) {
+  while (!digitalRead(VS_DREQ)) ; //Wait for DREQ to go high indicating IC is available
   digitalWrite(VS_XCS, LOW); //Select control
 
   //SCI consists of instruction byte, address byte, and 16-bit data word.
@@ -85,7 +87,7 @@ void VSWriteRegister(unsigned char addressbyte, unsigned char highbyte, unsigned
   SPI.transfer(addressbyte);
   SPI.transfer(highbyte);
   SPI.transfer(lowbyte);
-  while(!digitalRead(VS_DREQ)) ; //Wait for DREQ to go high indicating command is complete
+  while (!digitalRead(VS_DREQ)) ; //Wait for DREQ to go high indicating command is complete
   digitalWrite(VS_XCS, HIGH); //Deselect Control
 }
 
@@ -104,7 +106,7 @@ const unsigned short sVS1053b_Realtime_MIDI_Plugin[28] = { /* Compressed plugin 
 void VSLoadUserCode(void) {
   int i = 0;
 
-  while (i<sizeof(sVS1053b_Realtime_MIDI_Plugin)/sizeof(sVS1053b_Realtime_MIDI_Plugin[0])) {
+  while (i < sizeof(sVS1053b_Realtime_MIDI_Plugin) / sizeof(sVS1053b_Realtime_MIDI_Plugin[0])) {
     unsigned short addr, n, val;
     addr = sVS1053b_Realtime_MIDI_Plugin[i++];
     n = sVS1053b_Realtime_MIDI_Plugin[i++];

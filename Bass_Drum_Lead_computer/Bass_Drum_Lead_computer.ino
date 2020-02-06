@@ -1,4 +1,4 @@
-////////////////////////////////////////////
+//////////////////////////////////////////
 //  3.5" TOUCH SCREEN Bass, Drum & lead   //
 //          Sequencer Machine             //
 //                                        //
@@ -183,10 +183,8 @@ void setup()  {
   // *** vs1053
   digitalWrite(VS_XCS, true); //Deselect Control
   digitalWrite(VS_XDCS, true); //Deselect Data
-  digitalWrite(VS_RESET, true);
-  delay(20);
   digitalWrite(VS_RESET, false);
-  delay(20);
+  delayMicroseconds(10);
   digitalWrite(VS_RESET, true);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
@@ -242,7 +240,7 @@ void loop() {
     talkMIDI(0xB7, 0x7b, 127); //all notes channel 7 off
     talkMIDI(0xB8, 0x7b, 127); //all notes channel 8 off
     VSWriteRegister(0x0B, analogRead(A8) / 16, analogRead(A9) / 16); // Master Vol control left right
-    talkMIDI(0xB0, 0x0c, analogRead(A11) / 8); // effect control 1 (sets global reverb decay)
+    talkMIDI(0xB0, 0x0c, 127); // effect control 1 (sets global reverb decay)
     talkMIDI(0xB0, 0x26, analogRead(A10) / 8); // RPN LSB: 0 = bend range
     playNotes();
     delay(250 * 60 / tempo);
@@ -284,20 +282,14 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if (drumPlay) {
-      if ((instrument[0][slope][pat] >> tick) & (1)) {
-        noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
-      }
+    if (drumPlay && (instrument[0][slope][pat] >> tick) & (1)) {
+      noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
-    if (bassPlay) {
-      if ((instrument[1][slope][pat] >> tick) & (1)) {
-        noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
-      }
+    if (bassPlay && (instrument[1][slope][pat] >> tick) & (1)) {
+      noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
     }
-    if (leadPlay) {
-      if ((instrument[2][slope][pat] >> tick) & (1)) {
-        noteOn(7, instSet[2][slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
-      }
+    if (leadPlay && (instrument[2][slope][pat] >> tick) & (1)) {
+      noteOn(7, instSet[2][slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
     }
   }
   tick += 1;
