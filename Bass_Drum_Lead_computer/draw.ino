@@ -20,33 +20,35 @@ void patternScreen() {
     tft.print("Acc");
   }
   // *** draw keys
-  for (slope = 0; slope < 12; slope++) keys[slope].drawKey(tft);
-  // *** draw buttons
-  StartStopButton.draw(tft, buttonColor[0]);
-  Rewind.draw(tft, buttonColor[0]);
-  TempMinusButton.draw(tft, buttonColor[0]);
-  TempPlusButton.draw(tft, buttonColor[0]);
-  CopyButton.draw(tft, buttonColor[0]);
-  ClearButton.draw(tft, buttonColor[0]);
-  SaveButton.draw(tft, buttonColor[0]);
-  PasteButton.draw(tft, buttonColor[0]);
-  LoopButton.draw(tft, buttonColor[0]);
-  holeNote.draw(tft, TFT_MAGENTA);
-  halfNote.draw(tft, TFT_YELLOW);
-  quaterNote.draw(tft, TFT_CYAN);
-  eighthNote.draw(tft, TFT_GREEN);
-  sixteenthNote.draw(tft, buttonColor[1]);
-  LoopLen[0].draw(tft, buttonColor[0]);
-  ButtInst[0].draw(tft, buttonColor[1]);
-  ButtInst[1].draw(tft, buttonColor[0]);
-  ButtInst[2].draw(tft, buttonColor[0]);
-  ButtInstPlay[0].draw(tft, buttonColor[1]);
-  ButtInstPlay[1].draw(tft, buttonColor[0]);
-  ButtInstPlay[2].draw(tft, buttonColor[0]);
-  for (slope = 0; slope < 8; slope++) {
-    if (slope == 0 || slope == 4 ? color = 1 : color = 0);
-    ButtPat[slope].draw(tft, buttonColor[color]);
+  for (slope = 0; slope < 12; slope++) {
+    keys[slope].drawKey(tft);
+    if (slope < 8) {
+      if (slope == 0 || slope == 4 ? color = 0 : color = 1);
+      ButtPat[slope].draw(tft, buttonColor[color]);
+    }
+    if (slope > 0 && slope < 6) {
+      NoteLen[slope].draw(tft, buttonColor[slope]);
+    }
   }
+  // *** draw buttons
+  Setup.draw(tft, buttonColor[1]);
+  StartStopButton.draw(tft, buttonColor[1]);
+  Rewind.draw(tft, buttonColor[1]);
+  TempMinusButton.draw(tft, buttonColor[1]);
+  TempPlusButton.draw(tft, buttonColor[1]);
+  CopyButton.draw(tft, buttonColor[1]);
+  ClearButton.draw(tft, buttonColor[1]);
+  SaveButton.draw(tft, buttonColor[1]);
+  PasteButton.draw(tft, buttonColor[1]);
+  LoopButton.draw(tft, buttonColor[1]);
+  LoopLen[0].draw(tft, buttonColor[1]);
+  ButtInst[0].draw(tft, buttonColor[0]);
+  ButtInst[1].draw(tft, buttonColor[1]);
+  ButtInst[2].draw(tft, buttonColor[1]);
+  ButtInstPlay[0].draw(tft, buttonColor[0]);
+  ButtInstPlay[1].draw(tft, buttonColor[1]);
+  ButtInstPlay[2].draw(tft, buttonColor[1]);
+
   tft.setCursor(320, 27);
   tft.print("Drums");
   tft.setCursor(320, 67);
@@ -124,7 +126,7 @@ void drawPattern() {
         tool = !(instrument[instSelect][slope2][nextPat] & (1 << slope));
         xDraw = slope * 16 + 12;
         yDraw = (12 - slope2) * 19 + 12;
-        DRAW(TFT_RED);
+        DRAW(buttonColor[instNoteLen[instSelect][slope2][nextPat][slope]]);
       }
     }
   }
@@ -133,12 +135,12 @@ void DrawOrNot() {
   if (pat != nextPat) {
     drawPattern();
     if (patRow1Old != patRow1) {
-      ButtPat[patRow1Old].draw(tft, buttonColor[0]);
-      ButtPat[patRow1].draw(tft, buttonColor[1]);
+      ButtPat[patRow1Old].draw(tft, buttonColor[1]);
+      ButtPat[patRow1].draw(tft, buttonColor[0]);
       patRow1Old = patRow1;
     } else {
-      ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
-      ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
+      ButtPat[patRow2Old + 4].draw(tft, buttonColor[1]);
+      ButtPat[patRow2 + 4].draw(tft, buttonColor[0]);
       patRow2Old = patRow2;
     }
     pat = nextPat;
@@ -146,23 +148,23 @@ void DrawOrNot() {
   }
   if (instSelect != instSelectOld) {
     drawPattern();
-    ButtInst[instSelectOld].draw(tft, buttonColor[0]);
-    ButtInst[instSelect].draw(tft, buttonColor[1]);
+    ButtInst[instSelectOld].draw(tft, buttonColor[1]);
+    ButtInst[instSelect].draw(tft, buttonColor[0]);
     instSelectOld = instSelect;
   }
   if (playtrack > 0) {
     switch (playtrack) {
       case 1:
         drumPlay = !drumPlay;
-        ButtInstPlay[0].draw(tft, buttonColor[drumPlay]);
+        ButtInstPlay[0].draw(tft, buttonColor[!drumPlay]);
         break;
       case 2:
         bassPlay = !bassPlay;
-        ButtInstPlay[1].draw(tft, buttonColor[bassPlay]);
+        ButtInstPlay[1].draw(tft, buttonColor[!bassPlay]);
         break;
       case 3:
         leadPlay = !leadPlay;
-        ButtInstPlay[2].draw(tft, buttonColor[leadPlay]);
+        ButtInstPlay[2].draw(tft, buttonColor[!leadPlay]);
         break;
     }
     playtrack = toggle = 0;

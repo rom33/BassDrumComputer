@@ -8,13 +8,13 @@ void readTouch() {
       tool = !tool;
       switch (toggle) {
         case 1:
-          ButtPat[patRow1].draw(tft, buttonColor[tool]);
+          ButtPat[patRow1].draw(tft, buttonColor[!tool]);
           break;
         case 2:
-          ButtPat[patRow2 + 4].draw(tft, buttonColor[tool]);
+          ButtPat[patRow2 + 4].draw(tft, buttonColor[!tool]);
           break;
         case 3:
-          ButtInstPlay[playtrack - 1].draw(tft, buttonColor[tool]);
+          ButtInstPlay[playtrack - 1].draw(tft, buttonColor[!tool]);
           break;
       }
     }
@@ -24,24 +24,38 @@ void readTouch() {
       GetTouchPoints;
       xx = map(tp.x, TS_MINX, TS_MAXX, 480, 0);
       yy = map(tp.y, TS_MINY, TS_MAXY, 320, 0);
+      // *** note length touched?
+      for (slope = 1; slope < 6; slope++) {
+        if (NoteLen[slope].contains(xx, yy)) {
+          NoteLen[noteLen].draw(tft, buttonColor[noteLen]);
+          NoteLen[slope].draw(tft, buttonColor[0]);
+          noteLen = slope;
+        }
+      }
+      // *** setup touched?
+      /*    if (Setup.contains(x,y)){
+            goSetup();
+            patternMode();
+            return;
+          }*/
       // *** save touched?
       if (SaveButton.contains(xx, yy))
       {
         savePat();
-        SaveButton.draw(tft, buttonColor[1]);
+        SaveButton.draw(tft, buttonColor[0]);
         touched = 6;
         return;
       }
       // *** loop touched?
       if (LoopButton.contains(xx, yy)) {
         loopMode = !loopMode;
-        LoopButton.draw(tft, buttonColor[loopMode]);
+        LoopButton.draw(tft, buttonColor[!loopMode]);
       }
       // *** loop len touched?
       if (LoopLen[0].contains(xx, yy)) {
         loopLen += 1;
         if (loopLen > 3)loopLen = 1;
-        LoopLen[loopLen - 1].draw(tft, buttonColor[1]);
+        LoopLen[loopLen - 1].draw(tft, buttonColor[0]);
         touched = 16;
       }
       // *** clear touched?
@@ -49,11 +63,14 @@ void readTouch() {
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][16] = instrument[instSelect][slope][pat];
           instrument[instSelect][slope][pat] = 0;
+          for (slope2 = 0; slope2 < 16; slope2++) {
+            instNoteLen[instSelect][slope][pat][slope2] = 0;
+          }
         }
         nextPat = pat;
         pat = 16;
         drawPattern();
-        ClearButton.draw(tft, buttonColor[1]);
+        ClearButton.draw(tft, buttonColor[0]);
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][16] = 0;
         }
@@ -62,7 +79,7 @@ void readTouch() {
       // *** copy touched?
       if (CopyButton.contains(xx, yy))
       {
-        CopyButton.draw(tft, buttonColor[1]);
+        CopyButton.draw(tft, buttonColor[0]);
         copyPat = pat;
         return;
       }
@@ -71,9 +88,12 @@ void readTouch() {
       {
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][nextPat] = instrument[instSelect][slope][copyPat];
+          for (slope2 = 0; slope2 < 16; slope2++) {
+            instNoteLen[instSelect][slope][nextPat][slope2] = instNoteLen[instSelect][slope][copyPat][slope2];
+          }
         }
         drawPattern();
-        PasteButton.draw(tft, buttonColor[1]);
+        PasteButton.draw(tft, buttonColor[0]);
         touched = 13;
         pat = 16;
         return;
@@ -84,7 +104,7 @@ void readTouch() {
         tft.setCursor(400, 150 );
         Format(tempo);
         tft.print(tempo);
-        TempMinusButton.draw(tft, buttonColor[1]);
+        TempMinusButton.draw(tft, buttonColor[0]);
         touched = 10;
         return;
       }
@@ -94,7 +114,7 @@ void readTouch() {
         tft.setCursor(400, 150 );
         Format(tempo);
         tft.print(tempo);
-        TempPlusButton.draw(tft, buttonColor[1]);
+        TempPlusButton.draw(tft, buttonColor[0]);
         touched = 11;
         return;
       }
@@ -106,7 +126,27 @@ void readTouch() {
         yDraw = (12 - note) * 19 + 12;
         tool = ((instrument[instSelect][note][pat] >> stp) & (1));
         instrument[instSelect][note][pat] = ((1 << stp) ^ (instrument[instSelect][note][pat]));
-        DRAW(buttonColor[0]);
+        if ((instrument[instSelect][note][pat] >> stp) & (1)) {
+          instNoteLen[instSelect][note][pat][stp] = noteLen;
+          switch (noteLen) {
+            case 5:
+              instNoteOff[instSelect][note][pat][stp + 16] = note;
+              break;
+            case 4:
+              instNoteOff[instSelect][note][pat][stp + 8] = note;
+              break;
+            case 3:
+              instNoteOff[instSelect][note][pat][stp + 4] =  note;
+              break;
+            case 2:
+              instNoteOff[instSelect][note][pat][stp + 2] = note;
+              break;
+            case 1:
+              instNoteOff[instSelect][note][pat][stp + 1] = note;
+              break;
+          }
+        }
+        DRAW(buttonColor[noteLen]);
         return;
       }
       // *** note key touch?
@@ -120,13 +160,13 @@ void readTouch() {
       // *** start stop touched?
       if (StartStopButton.contains(xx, yy)) {
         play = !play;
-        StartStopButton.draw(tft, buttonColor[play]);
+        StartStopButton.draw(tft, buttonColor[!play]);
         return;
       }
       // **** rewind button?
       if (Rewind.contains(xx, yy))
       {
-        Rewind.draw(tft, buttonColor[1]);
+        Rewind.draw(tft, buttonColor[0]);
         touched = 9;
         if (tick > 0) {
           stp = tick - 1;
@@ -144,7 +184,7 @@ void readTouch() {
               patRow1 = slope;
               if (patRow1 != patRow1Old) {
                 nextPat = patRow1 + patRow2 * 4;
-                ButtPat[patRow1].draw(tft, buttonColor[1]);
+                ButtPat[patRow1].draw(tft, buttonColor[0]);
                 toggle = 1;
               }
               return;
@@ -158,7 +198,7 @@ void readTouch() {
             if (patRow2 != patRow2Old) {
               pat = nextPat;
               nextPat = patRow1 + patRow2 * 4;
-              ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
+              ButtPat[patRow2 + 4].draw(tft, buttonColor[0]);
               toggle = 2;
             }
             return;
@@ -167,7 +207,7 @@ void readTouch() {
         // *** track play touched?
         for (slope = 0; slope < 3; slope++) {
           if (ButtInstPlay[slope].contains (xx, yy)) {
-            ButtInstPlay[slope].draw(tft, buttonColor[1]);
+            ButtInstPlay[slope].draw(tft, buttonColor[0]);
             playtrack = slope + 1;
             toggle = 3;
           }
@@ -179,8 +219,8 @@ void readTouch() {
           instSelectOld = instSelect;
           instSelect = slope;
           if (instSelect != instSelectOld) {
-            ButtInst[instSelect].draw(tft, buttonColor[1]);
-            ButtInst[instSelectOld].draw(tft, buttonColor[0]);
+            ButtInst[instSelect].draw(tft, buttonColor[0]);
+            ButtInst[instSelectOld].draw(tft, buttonColor[1]);
             DrawOrNot();
           }
           return;
@@ -194,48 +234,33 @@ void buttonReverse() {
   if (touched > 0)
   {
     switch (touched) {
-      case 1:
-        holeNote.draw(tft, TFT_MAGENTA);
-        break;
-      case 2:
-        halfNote.draw(tft, TFT_YELLOW);
-        break;
-      case 3:
-        quaterNote.draw(tft, TFT_CYAN);
-        break;
-      case 4:
-        eighthNote.draw(tft, TFT_GREEN);
-        break;
-      case 5:
-        sixteenthNote.draw(tft, buttonColor[0]);
-        break;
       case 6:
-        SaveButton.draw(tft, buttonColor[0]);
+        SaveButton.draw(tft, buttonColor[1]);
         break;
       case 9:
-        Rewind.draw(tft, buttonColor[0]);
+        Rewind.draw(tft, buttonColor[1]);
         break;
       case 10:
-        TempMinusButton.draw(tft, buttonColor[0]);
+        TempMinusButton.draw(tft, buttonColor[1]);
         break;
       case 11:
-        TempPlusButton.draw(tft, buttonColor[0]);
+        TempPlusButton.draw(tft, buttonColor[1]);
         break;
       case 12:
-        ClearButton.draw(tft, buttonColor[0]);
+        ClearButton.draw(tft, buttonColor[1]);
         break;
       case 13:
-        CopyButton.draw(tft, buttonColor[0]);
-        PasteButton.draw(tft, buttonColor[0]);
+        CopyButton.draw(tft, buttonColor[1]);
+        PasteButton.draw(tft, buttonColor[1]);
         break;
       case 14:
-        ScrollUp.draw(tft, buttonColor[0]);
+        ScrollUp.draw(tft, buttonColor[1]);
         break;
       case 15:
-        ScrollDown.draw(tft, buttonColor[0]);
+        ScrollDown.draw(tft, buttonColor[1]);
         break;
       case 16:
-        LoopLen[loopLen - 1].draw(tft, buttonColor[0]);
+        LoopLen[loopLen - 1].draw(tft, buttonColor[1]);
         break;
     }
     touched = 0;
@@ -245,7 +270,7 @@ void readRot() {
   for (slope = 0; slope < 3; slope++) {
     currentPosition[slope] = digitalRead(CLK[slope]);
     currTime = millis();
-    if (currTime - prevTime >= interval * 3) pressed = false;
+    if (currTime - prevTime >= rotInterval) pressed = false;
     if (!digitalRead(rotButton[slope]) && !pressed)
     {
       rotMode[slope] += 1;

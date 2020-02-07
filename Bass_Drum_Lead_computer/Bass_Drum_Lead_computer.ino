@@ -58,6 +58,36 @@ int rotMode[3];
 #define WaitTouch do{tp=myTouch.getPoint();}while(tp.z<MINPRESSURE);
 #define GetTouchPoints tp=myTouch.getPoint();xx=map(tp.x,TS_MINX,TS_MAXX,480,0);yy=map(tp.y,TS_MINY,TS_MAXY,320,0);
 
+String drumSounds[] = {"High Q               ","Slap                 ","Scratch Push[EXC 7]  ","Scratch Pull [EXC 7] ","Sticks               ","Square Click         ","Metronome Click      ", 
+                       "Metronome Bell       ","Acoustic Bass Drum   ","Bass Drum            ","Side Stick           ","Acoustic Snare       ","Hand Clap            ","Electric Snare       ", 
+                       "Low Floor Tom        ","Closed Hi-hat [EXC 1]","High Floor Tom       ","Pedal Hi-hat [EXC 1] ","Low Tom              ","Open Hi-hat [EXC 1]  ","Low-Mid Tom          ", 
+                       "High Mid Tom         ","Crash Cymbal 1       ","High Tom             ","Ride Cymbal 1        ","Chinese Cymbal       ","Ride Bell            ","Tambourine           ", 
+                       "Splash Cymbal        ","Cowbell              ","Crash Cymbal 2       ","Vibra-slap           ","Ride Cymbal 2        ","High Bongo           ","Low Bongo            ",
+                       "Mute Hi Conga        ","Open Hi Conga        ","Low Conga            ","High Timbale         ","Low Timbale          ","High Agogo           ","Low Agogo            ", 
+                       "Cabasa               ","Maracas              ","Short Whistle [EXC 2]","Long Whistle [EXC 2] ","Short Guiro [EXC 3]  ","Long Guiro [EXC 3]   ","Claves               ", 
+                       "Hi Wood Block        ","Low Wood Block       ","Mute Cuica [EXC 4]   ","Open Cuica [EXC 4]   ","Mute Triangle [EXC 5]","Open Triangle [EXC 5]","Shaker               ", 
+                       "Jingle bell          ","Bell tree            ","Castanets            ","Mute Surdo [EXC 6]   ","Open Surdo [EXC 6]   ", ""};
+                       
+String Sounds[] = {"Acoustic Grand Piano ","Bright Acoustic Piano","Electric Grand Piano ","Honky-tonk Piano     ","Electric Piano 1     ","Electric Piano 2     ","Harpsichord          ",
+                   "Clavi                ","Celesta              ","Glockenspiel         ","Music Box            ","Vibraphone           ","Marimba              ","Xylophone            ",
+                   "Tubular Bells        ","Dulcimer             ","Drawbar Organ        ","Percussive Organ     ","Rock Organ           ","Church Organ         ","Reed Organ           ",
+                   "Accordion            ","Harmonica            ","Tango Accordion      ","AcousticGuitar(nylon)","AcousticGuitar(steel)","ElectricGuitar(jazz) ","ElectricGuitar(clean)",
+                   "ElectricGuitar(muted)","Overdriven Guitar    ","Distortion Guitar    ","Guitar Harmonics     ","Acoustic Bass        ","Electric Bass(finger)","Electric Bass(pick)  ",
+                   "Fretless Bass        ","Slap Bass 1          ","Slap Bass 2          ","Synth Bass 1         ","Synth Bass 2         ","Violin               ","Viola                ",
+                   "Cello                ","Contrabass           ","Tremolo Strings      ","Pizzicato Strings    ","Orchestral Harp      ","Timpani              ","String Ensembles 1   ",
+                   "String Ensembles 2   ","Synth Strings 1      ","Synth Strings 2      ","Choir Aahs           ","Voice Oohs           ","Synth Voice          ","Orchestra Hit        ",
+                   "Trumpet              ","Trombone             ","Tuba                 ","Muted Trumpet        ","French Horn          ","Brass Section        ","Synth Brass 1        ",
+                   "Synth Brass 2        ","Soprano Sax          ","Alto Sax             ","Tenor Sax            ","Baritone Sax         ","Oboe                 ","English Horn         ",
+                   "Bassoon              ","Clarinet             ","Piccolo              ","Flute                ","Recorder             ","Pan Flute            ","Blown Bottle         ",
+                   "Shakuhachi           ","Whistle              ","Ocarina              ","Square Lead (Lead 1) ","Saw Lead (Lead)      ","Calliope Lead(Lead 3)","Chiff Lead (Lead 4)  ",
+                   "Charang Lead (Lead 5)","Voice Lead (Lead 6)  ","Fifths Lead (Lead 7) ","Bass + Lead (Lead 8) ","New Age (Pad 1)      ","Warm Pad (Pad 2)     ","Polysynth (Pad 3)    ",
+                   "Choir (Pad 4)        ","Bowed (Pad 5)        ","Metallic (Pad 6)     ","Halo (Pad 7)         ","Sweep (Pad 8)        ","Rain (FX 1)          ","Sound Track (FX 2)   ",
+                   "Crystal (FX 3)       ","Atmosphere (FX 4)    ","Brightness (FX 5)    ","Goblins (FX 6)       ","Echoes (FX 7)        ","Sci-fi (FX 8)        ","Sitar                ",
+                   "Banjo                ","Shamisen             ","Koto                 ","Kalimba              ","Bag Pipe             ","Fiddle               ","Shanai               ",
+                   "Tinkle Bell          ","Agogo                ","Pitched Percussion   ","Woodblock            ","Taiko Drum           ","Melodic Tom          ","Synth Drum           ",
+                   "Reverse Cymbal       ","Guitar Fret Noise    ","Breath Noise         ","Seashore             ","Bird Tweet           ","Telephone Ring       ","Helicopter           ",
+                   "Applause             ","Gunshot              "};
+
 // *** button declaraions
 Button ButtPat[] = {
   Button(123, 277, 30, 20, "1"),
@@ -84,6 +114,15 @@ Button LoopLen[] = {
   Button(425, 250, 55, 25, "1 - 3"),
   Button(425, 250, 55, 25, "1 - 4"),
 };
+Button NoteLen[] = {
+  Button(0,0,0,0,""),
+  Button(320, 295, 35, 25,  "1/16"),
+  Button(320, 265, 35, 25,  "1/8"),
+  Button(320, 235, 35, 25,  "1/4"),
+  Button(320, 205, 35, 25,  "1/2"),
+  Button(320, 175, 35, 25,  " 1"),
+};
+
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
 Button LoopButton       = Button(365, 250, 55, 25, "Loop");
@@ -95,12 +134,7 @@ Button ClearButton      = Button(365, 190, 55, 25,  "CL");
 Button SaveButton       = Button(425, 190, 55, 25,  "SV");
 Button TempMinusButton  = Button(365, 160, 55, 25,  "--");
 Button TempPlusButton   = Button(425, 160, 55, 25,  "++");
-Button holeNote         = Button(320, 175, 35, 25,  " 1");
-Button halfNote         = Button(320, 205, 35, 25,  "1/2");
-Button quaterNote       = Button(320, 235, 35, 25,  "1/4");
-Button eighthNote       = Button(320, 265, 35, 25,  "1/8");
-Button sixteenthNote    = Button(320, 295, 35, 25,  "1/16");
-Button Setup            = Button(320, 3, 115, 20,  "Setup");
+Button Setup            = Button(325, 3, 115, 20,  "Setup");
 Button ScrollUp         = Button(320, 220, 55, 25, "Up");
 Button ScrollDown       = Button(380, 220, 55, 25, "Dn");
 Button BackButton       = Button(380, 270, 55, 40, "Back");
@@ -134,15 +168,17 @@ int potRead1, potRead2, potRead3, val, rX[8], rY[8];
 int32_t clx, crx, cty, cby;
 float px, py;
 bool pressed;
-unsigned long buttonColor[] = {TFT_RED, TFT_BLACK};
-byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack;
+unsigned long buttonColor[] = {TFT_BLACK, TFT_RED, TFT_MAGENTA, TFT_YELLOW, TFT_CYAN, TFT_GREEN};
+byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack, noteLen;
 bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
 unsigned short instrument[4][13][17], bassSound = 32, leadSound = 1;
-unsigned short interval = 200, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, touched;
+unsigned short instNoteLen[4][13][16][16];
+unsigned short instNoteOff[4][13][16][16];
+unsigned short interval = 200, rotInterval = 600, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, slope3, touched;
 unsigned short tick, tempo = 120;
 unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;
-unsigned long currentMillis, previousMillis, currTime, prevTime, curMillis, prevMillis;
+unsigned long currentMillis, previousMillis, currTime, prevTime;
 
 void setup()  {
   /*
@@ -230,6 +266,7 @@ void setup()  {
   pat = nextPat;
   drumPlay = true;
   loopLen = 1;
+  noteLen = 1;
 
   // *** scheduler begin
   Scheduler.startLoop(readTouch);
@@ -237,8 +274,6 @@ void setup()  {
 
 void loop() {
   while (1) {
-    talkMIDI(0xB7, 0x7b, 127); //all notes channel 7 off
-    talkMIDI(0xB8, 0x7b, 127); //all notes channel 8 off
     VSWriteRegister(0x0B, analogRead(A8) / 16, analogRead(A9) / 16); // Master Vol control left right
     talkMIDI(0xB0, 0x0c, 127); // effect control 1 (sets global reverb decay)
     talkMIDI(0xB0, 0x26, analogRead(A10) / 8); // RPN LSB: 0 = bend range
@@ -261,16 +296,16 @@ void playNotes() {
       if (patRow2 != patRow2Old) {
         nextPat = 0 + patRow2 * 4;
         patRow1 = 0;
-        ButtPat[patRow2Old + 4].draw(tft, buttonColor[0]);
-        ButtPat[patRow2 + 4].draw(tft, buttonColor[1]);
+        ButtPat[patRow2Old + 4].draw(tft, buttonColor[1]);
+        ButtPat[patRow2 + 4].draw(tft, buttonColor[0]);
         patRow2Old = patRow2;
       }
       if (nextPat > loopLen + patRow2 * 4) {
         nextPat = patRow2 * 4;
         patRow1 = 0;
       }
-      ButtPat[patRow1Old].draw(tft, buttonColor[0]);
-      ButtPat[patRow1].draw(tft, buttonColor[1]);
+      ButtPat[patRow1Old].draw(tft, buttonColor[1]);
+      ButtPat[patRow1].draw(tft, buttonColor[0]);
     }
     DrawOrNot();
     tick = 0;
@@ -282,11 +317,20 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
+    if(instNoteOff[0][slope][pat][tick] > 0){
+      noteOff(9, instSet[0][slope], 0);
+    }
     if (drumPlay && (instrument[0][slope][pat] >> tick) & (1)) {
       noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
+    if(instNoteOff[1][slope][pat][tick] > 0){
+      noteOff(8, instSet[1][slope], 0);
+    }
     if (bassPlay && (instrument[1][slope][pat] >> tick) & (1)) {
       noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
+    }
+    if(instNoteOff[2][slope][pat][tick] > 0){
+      noteOff(7, instSet[2][slope], 0);
     }
     if (leadPlay && (instrument[2][slope][pat] >> tick) & (1)) {
       noteOn(7, instSet[2][slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
