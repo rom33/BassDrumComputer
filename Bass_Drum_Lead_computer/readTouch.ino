@@ -88,10 +88,12 @@ void readTouch() {
       {
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][nextPat] = instrument[instSelect][slope][copyPat];
-          for (slope2 = 0; slope2 < 16; slope2++) {
-            instNoteLen[instSelect][slope][nextPat][slope2] = instNoteLen[instSelect][slope][copyPat][slope2];
-          }
         }
+          for (slope2 = 0; slope2 < 16; slope2++) {
+            for (slope = 0; slope < 13; slope++) {
+            instNoteLen[instSelect][slope][nextPat][slope2] = instNoteLen[instSelect][slope][copyPat][slope2];
+            }
+          }        
         drawPattern();
         PasteButton.draw(tft, buttonColor[0]);
         touched = 13;
@@ -101,7 +103,7 @@ void readTouch() {
       // *** tempo minus touched?
       if (TempMinusButton.contains(xx, yy)) {
         tempo -= 1;
-        tft.setCursor(400, 150 );
+        tft.setCursor(400, 195 );
         Format(tempo);
         tft.print(tempo);
         TempMinusButton.draw(tft, buttonColor[0]);
@@ -111,7 +113,7 @@ void readTouch() {
       // *** tempo plus touched?
       if (TempPlusButton.contains(xx, yy)) {
         tempo += 1;
-        tft.setCursor(400, 150 );
+        tft.setCursor(400, 195 );
         Format(tempo);
         tft.print(tempo);
         TempPlusButton.draw(tft, buttonColor[0]);
@@ -126,26 +128,11 @@ void readTouch() {
         yDraw = (12 - note) * 19 + 12;
         tool = ((instrument[instSelect][note][pat] >> stp) & (1));
         instrument[instSelect][note][pat] = ((1 << stp) ^ (instrument[instSelect][note][pat]));
-        if ((instrument[instSelect][note][pat] >> stp) & (1)) {
-          instNoteLen[instSelect][note][pat][stp] = noteLen;
-          switch (noteLen) {
-            case 5:
-              instNoteOff[instSelect][note][pat][stp + 16] = note;
-              break;
-            case 4:
-              instNoteOff[instSelect][note][pat][stp + 8] = note;
-              break;
-            case 3:
-              instNoteOff[instSelect][note][pat][stp + 4] =  note;
-              break;
-            case 2:
-              instNoteOff[instSelect][note][pat][stp + 2] = note;
-              break;
-            case 1:
-              instNoteOff[instSelect][note][pat][stp + 1] = note;
-              break;
-          }
+        if (instNoteLen[instSelect][note][pat][stp] > 0) {
+          switchNoteLen(instNoteLen[instSelect][note][pat][stp],note,pat);
         }
+        instNoteLen[instSelect][note][pat][stp] = noteLen;
+        switchNoteLen(noteLen,note,pat);
         DRAW(buttonColor[noteLen]);
         return;
       }
@@ -333,4 +320,23 @@ void DrawValuePan(int value, int height) {
   tft.drawFastVLine(320 + value, height, 6, TFT_WHITE);
   tft.drawFastVLine(321 + value, height, 6, TFT_RED);
   tft.drawFastVLine(322 + value, height, 6, TFT_WHITE);
+}
+void switchNoteLen(int LEN, int NOTE, int PAT) {
+  switch (LEN) {
+    case 5:
+      instNoteOff[instSelect][NOTE][PAT] = ((1 << 16 + stp) ^ (instNoteOff[instSelect][NOTE][PAT]));
+      break;
+    case 4:
+      instNoteOff[instSelect][NOTE][PAT] = ((1 << 8 + stp) ^ (instNoteOff[instSelect][NOTE][PAT]));
+      break;
+    case 3:
+      instNoteOff[instSelect][NOTE][PAT] = ((1 << 4 + stp) ^ (instNoteOff[instSelect][NOTE][PAT]));
+      break;
+    case 2:
+      instNoteOff[instSelect][NOTE][PAT] = ((1 << 2 + stp) ^ (instNoteOff[instSelect][NOTE][PAT]));
+      break;
+    case 1:
+      instNoteOff[instSelect][NOTE][PAT] = ((1 << 1 + stp) ^ (instNoteOff[instSelect][NOTE][PAT]));
+      break;
+  }
 }

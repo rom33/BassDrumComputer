@@ -110,30 +110,30 @@ Button ButtInstPlay[] = {
   Button(300, 254, 15, 20, "P"),
 };
 Button LoopLen[] = {
-  Button(425, 250, 55, 25, "1 - 2"),
-  Button(425, 250, 55, 25, "1 - 3"),
-  Button(425, 250, 55, 25, "1 - 4"),
+  Button(425, 295, 55, 25, "1 - 2"),
+  Button(425, 295, 55, 25, "1 - 3"),
+  Button(425, 295, 55, 25, "1 - 4"),
 };
 Button NoteLen[] = {
   Button(0,0,0,0,""),
-  Button(320, 295, 35, 25,  "1/16"),
-  Button(320, 265, 35, 25,  "1/8"),
-  Button(320, 235, 35, 25,  "1/4"),
-  Button(320, 205, 35, 25,  "1/2"),
-  Button(320, 175, 35, 25,  " 1"),
+  Button(320, 300, 35, 20,  "1/16"),
+  Button(320, 277, 35, 20,  "1/8"),
+  Button(320, 254, 35, 20,  "1/4"),
+  Button(320, 231, 35, 20,  "1/2"),
+  Button(320, 208, 35, 20,  " 1"),
 };
 
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
-Button LoopButton       = Button(365, 250, 55, 25, "Loop");
+Button LoopButton       = Button(365, 295, 55, 25, "Loop");
 Button SongButton       = Button(365, 280, 115, 25, "Song  Mode");
 Button PatButton        = Button(365, 280, 115, 25, "Pat.  Mode");
-Button CopyButton       = Button(365, 220, 55, 25,  "CP");
-Button PasteButton      = Button(425, 220, 55, 25,  "PA");
-Button ClearButton      = Button(365, 190, 55, 25,  "CL");
-Button SaveButton       = Button(425, 190, 55, 25,  "SV");
-Button TempMinusButton  = Button(365, 160, 55, 25,  "--");
-Button TempPlusButton   = Button(425, 160, 55, 25,  "++");
+Button CopyButton       = Button(365, 265, 55, 25,  "CP");
+Button PasteButton      = Button(425, 265, 55, 25,  "PA");
+Button ClearButton      = Button(365, 235, 55, 25,  "CL");
+Button SaveButton       = Button(425, 235, 55, 25,  "SV");
+Button TempMinusButton  = Button(365, 205, 55, 25,  "--");
+Button TempPlusButton   = Button(425, 205, 55, 25,  "++");
 Button Setup            = Button(325, 3, 115, 20,  "Setup");
 Button ScrollUp         = Button(320, 220, 55, 25, "Up");
 Button ScrollDown       = Button(380, 220, 55, 25, "Dn");
@@ -173,7 +173,7 @@ byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld
 bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
 unsigned short instrument[4][13][17], bassSound = 32, leadSound = 1;
 unsigned short instNoteLen[4][13][16][16];
-unsigned short instNoteOff[4][13][16][16];
+unsigned long instNoteOff[4][13][16];
 unsigned short interval = 200, rotInterval = 600, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, slope3, touched;
 unsigned short tick, tempo = 120;
 unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
@@ -317,19 +317,19 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if(instNoteOff[0][slope][pat][tick] > 0){
+    if((instNoteOff[0][slope][pat] >> tick) & (1)||(instNoteOff[0][slope][pat] >> 16 + tick) & (1)){
       noteOff(9, instSet[0][slope], 0);
     }
     if (drumPlay && (instrument[0][slope][pat] >> tick) & (1)) {
       noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
-    if(instNoteOff[1][slope][pat][tick] > 0){
+    if((instNoteOff[1][slope][pat] >> tick) & (1)||(instNoteOff[1][slope][pat] >> 16 + tick) & (1)){
       noteOff(8, instSet[1][slope], 0);
     }
     if (bassPlay && (instrument[1][slope][pat] >> tick) & (1)) {
       noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
     }
-    if(instNoteOff[2][slope][pat][tick] > 0){
+    if((instNoteOff[2][slope][pat] >> tick) & (1)||(instNoteOff[2][slope][pat] >> 16 + tick) & (1)){
       noteOff(7, instSet[2][slope], 0);
     }
     if (leadPlay && (instrument[2][slope][pat] >> tick) & (1)) {

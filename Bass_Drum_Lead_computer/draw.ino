@@ -26,10 +26,11 @@ void patternScreen() {
       if (slope == 0 || slope == 4 ? color = 0 : color = 1);
       ButtPat[slope].draw(tft, buttonColor[color]);
     }
-    if (slope > 0 && slope < 6) {
+    if (slope > 1 && slope < 6) {
       NoteLen[slope].draw(tft, buttonColor[slope]);
     }
   }
+  NoteLen[1].draw(tft, buttonColor[0]);
   // *** draw buttons
   Setup.draw(tft, buttonColor[1]);
   StartStopButton.draw(tft, buttonColor[1]);
@@ -104,9 +105,9 @@ void patternScreen() {
   tft.print(pan[0] - 64);
   DrawValuePan(pan[0], 138);
 
-  tft.setCursor(425, 150 );
+  tft.setCursor(425, 195 );
   tft.print("bpm");
-  tft.setCursor(400, 150 );
+  tft.setCursor(400, 195 );
   tft.print(tempo);
 }
 void drawRec() {
@@ -127,6 +128,9 @@ void drawPattern() {
         xDraw = slope * 16 + 12;
         yDraw = (12 - slope2) * 19 + 12;
         DRAW(buttonColor[instNoteLen[instSelect][slope2][nextPat][slope]]);
+        if (instNoteLen[instSelect][slope2][nextPat][slope] > 0) {
+          switchNoteLen(instNoteLen[instSelect][slope2][nextPat][slope], slope2, nextPat);
+        }
       }
     }
   }
