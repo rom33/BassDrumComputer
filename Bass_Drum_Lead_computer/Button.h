@@ -23,7 +23,9 @@ public:
   int m_y;  
   int m_width; // width of octave button
   int m_height; // height of octave button
-
+  String m_instrument;
+  int colur;
+  
   Button(int xcoord, int ycoord, int width, int height,String buttonCaption); // prototype for constructor of Button object
   Button(int color, int keyy); // prototype of constructor for 'Key' data type
   
@@ -34,6 +36,6 @@ public:
   void draw(TFT_HX8357_Due tft, int colour);  
   // A second method declaration, it passes the parameter "TFT_HX8357_Due" 
   // to draw() and gives it the local name "tft". 
-  void drawKey(TFT_HX8357_Due tft); 
+  void drawKey(TFT_HX8357_Due tft, String Instrument); 
 };
 #endif

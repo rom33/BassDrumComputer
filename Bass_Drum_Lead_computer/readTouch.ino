@@ -88,9 +88,7 @@ void readTouch() {
       {
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][nextPat] = instrument[instSelect][slope][copyPat];
-        }
           for (slope2 = 0; slope2 < 16; slope2++) {
-            for (slope = 0; slope < 13; slope++) {
             instNoteLen[instSelect][slope][nextPat][slope2] = instNoteLen[instSelect][slope][copyPat][slope2];
             }
           }        
@@ -208,6 +206,10 @@ void readTouch() {
           if (instSelect != instSelectOld) {
             ButtInst[instSelect].draw(tft, buttonColor[0]);
             ButtInst[instSelectOld].draw(tft, buttonColor[1]);
+              for (slope = 0; slope < 13; slope++) {
+                if(instSelect == 0 ? printInst = drumSounds[instSet[0][slope]-27] : printInst="");
+                keys[slope].drawKey(tft, printInst);
+              }
             DrawOrNot();
           }
           return;

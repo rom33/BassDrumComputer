@@ -58,15 +58,15 @@ int rotMode[3];
 #define WaitTouch do{tp=myTouch.getPoint();}while(tp.z<MINPRESSURE);
 #define GetTouchPoints tp=myTouch.getPoint();xx=map(tp.x,TS_MINX,TS_MAXX,480,0);yy=map(tp.y,TS_MINY,TS_MAXY,320,0);
 
-String drumSounds[] = {"High Q               ","Slap                 ","Scratch Push[EXC 7]  ","Scratch Pull [EXC 7] ","Sticks               ","Square Click         ","Metronome Click      ", 
-                       "Metronome Bell       ","Acoustic Bass Drum   ","Bass Drum            ","Side Stick           ","Acoustic Snare       ","Hand Clap            ","Electric Snare       ", 
-                       "Low Floor Tom        ","Closed Hi-hat [EXC 1]","High Floor Tom       ","Pedal Hi-hat [EXC 1] ","Low Tom              ","Open Hi-hat [EXC 1]  ","Low-Mid Tom          ", 
-                       "High Mid Tom         ","Crash Cymbal 1       ","High Tom             ","Ride Cymbal 1        ","Chinese Cymbal       ","Ride Bell            ","Tambourine           ", 
-                       "Splash Cymbal        ","Cowbell              ","Crash Cymbal 2       ","Vibra-slap           ","Ride Cymbal 2        ","High Bongo           ","Low Bongo            ",
-                       "Mute Hi Conga        ","Open Hi Conga        ","Low Conga            ","High Timbale         ","Low Timbale          ","High Agogo           ","Low Agogo            ", 
-                       "Cabasa               ","Maracas              ","Short Whistle [EXC 2]","Long Whistle [EXC 2] ","Short Guiro [EXC 3]  ","Long Guiro [EXC 3]   ","Claves               ", 
-                       "Hi Wood Block        ","Low Wood Block       ","Mute Cuica [EXC 4]   ","Open Cuica [EXC 4]   ","Mute Triangle [EXC 5]","Open Triangle [EXC 5]","Shaker               ", 
-                       "Jingle bell          ","Bell tree            ","Castanets            ","Mute Surdo [EXC 6]   ","Open Surdo [EXC 6]   ", ""};
+String drumSounds[] = {"High Q","Slap","Sc.Push","Sc.Pull","Sticks","Sq.Clic","Me.Clic", 
+                       "Me.Bell","Ac.B.D","Bs Drum","Si.Stic","Ac.Snar","Hd Clap","El.Snar", 
+                       "L.F.Tom","Cl.HH","H.F.Tom","P.HH","L.Tom","O.HHat","L.M.Tom", 
+                       "H.M.Tom","Cr.Cym","H.Tom","R.Cym 1","Ch.Cym","R.Bell","Tambou.", 
+                       "Sp.Cym.","Cowbel","Cr.Cy.2","Vi.slap","R.Cym 2","H.Bongo","L.Bongo",
+                       "M.H.Con","O.H.Co","L.Conga","H.Timb.","L.Timb.","H.Agogo","L.Agogo", 
+                       "Cabasa","Marac.","S.Whis.","L.Whis.","S.Guir.","L.Guiro","Claves", 
+                       "H.Wd B.","L.Wd B.","M.Cuica","O.Cuica","M.Tria.","O.Tria.","Shaker", 
+                       "J.bell","B.Tree","Castan.","M.Surdo","O.Surdo"};
                        
 String Sounds[] = {"Acoustic Grand Piano ","Bright Acoustic Piano","Electric Grand Piano ","Honky-tonk Piano     ","Electric Piano 1     ","Electric Piano 2     ","Harpsichord          ",
                    "Clavi                ","Celesta              ","Glockenspiel         ","Music Box            ","Vibraphone           ","Marimba              ","Xylophone            ",
@@ -179,6 +179,7 @@ unsigned short tick, tempo = 120;
 unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
 unsigned long color;
 unsigned long currentMillis, previousMillis, currTime, prevTime;
+String printInst;
 
 void setup()  {
   /*

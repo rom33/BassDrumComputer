@@ -20,8 +20,9 @@ void patternScreen() {
     tft.print("Acc");
   }
   // *** draw keys
-  for (slope = 0; slope < 12; slope++) {
-    keys[slope].drawKey(tft);
+
+  for (slope = 0; slope < 13; slope++) {
+    keys[slope].drawKey(tft, drumSounds[instSet[0][slope]-27]);
     if (slope < 8) {
       if (slope == 0 || slope == 4 ? color = 0 : color = 1);
       ButtPat[slope].draw(tft, buttonColor[color]);
