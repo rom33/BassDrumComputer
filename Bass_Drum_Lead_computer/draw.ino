@@ -33,6 +33,10 @@ void patternScreen() {
   }
   NoteLen[1].draw(tft, buttonColor[0]);
   // *** draw buttons
+  InstPlus.draw(tft, buttonColor[1]);
+  InstMinus.draw(tft, buttonColor[1]);  
+  OctaveUp.draw(tft, buttonColor[1]);
+  OctaveDown.draw(tft, buttonColor[1]);  
   Setup.draw(tft, buttonColor[1]);
   StartStopButton.draw(tft, buttonColor[1]);
   Rewind.draw(tft, buttonColor[1]);

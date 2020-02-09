@@ -1,4 +1,4 @@
-//////////////////////////////////////////
+////////////////////////////////////////////
 //  3.5" TOUCH SCREEN Bass, Drum & lead   //
 //          Sequencer Machine             //
 //                                        //
@@ -68,25 +68,25 @@ String drumSounds[] = {"High Q","Slap","Sc.Push","Sc.Pull","Sticks","Sq.Clic","M
                        "H.Wd B.","L.Wd B.","M.Cuica","O.Cuica","M.Tria.","O.Tria.","Shaker", 
                        "J.bell","B.Tree","Castan.","M.Surdo","O.Surdo"};
                        
-String Sounds[] = {"Acoustic Grand Piano ","Bright Acoustic Piano","Electric Grand Piano ","Honky-tonk Piano     ","Electric Piano 1     ","Electric Piano 2     ","Harpsichord          ",
-                   "Clavi                ","Celesta              ","Glockenspiel         ","Music Box            ","Vibraphone           ","Marimba              ","Xylophone            ",
-                   "Tubular Bells        ","Dulcimer             ","Drawbar Organ        ","Percussive Organ     ","Rock Organ           ","Church Organ         ","Reed Organ           ",
-                   "Accordion            ","Harmonica            ","Tango Accordion      ","AcousticGuitar(nylon)","AcousticGuitar(steel)","ElectricGuitar(jazz) ","ElectricGuitar(clean)",
-                   "ElectricGuitar(muted)","Overdriven Guitar    ","Distortion Guitar    ","Guitar Harmonics     ","Acoustic Bass        ","Electric Bass(finger)","Electric Bass(pick)  ",
-                   "Fretless Bass        ","Slap Bass 1          ","Slap Bass 2          ","Synth Bass 1         ","Synth Bass 2         ","Violin               ","Viola                ",
-                   "Cello                ","Contrabass           ","Tremolo Strings      ","Pizzicato Strings    ","Orchestral Harp      ","Timpani              ","String Ensembles 1   ",
-                   "String Ensembles 2   ","Synth Strings 1      ","Synth Strings 2      ","Choir Aahs           ","Voice Oohs           ","Synth Voice          ","Orchestra Hit        ",
-                   "Trumpet              ","Trombone             ","Tuba                 ","Muted Trumpet        ","French Horn          ","Brass Section        ","Synth Brass 1        ",
-                   "Synth Brass 2        ","Soprano Sax          ","Alto Sax             ","Tenor Sax            ","Baritone Sax         ","Oboe                 ","English Horn         ",
-                   "Bassoon              ","Clarinet             ","Piccolo              ","Flute                ","Recorder             ","Pan Flute            ","Blown Bottle         ",
-                   "Shakuhachi           ","Whistle              ","Ocarina              ","Square Lead (Lead 1) ","Saw Lead (Lead)      ","Calliope Lead(Lead 3)","Chiff Lead (Lead 4)  ",
-                   "Charang Lead (Lead 5)","Voice Lead (Lead 6)  ","Fifths Lead (Lead 7) ","Bass + Lead (Lead 8) ","New Age (Pad 1)      ","Warm Pad (Pad 2)     ","Polysynth (Pad 3)    ",
-                   "Choir (Pad 4)        ","Bowed (Pad 5)        ","Metallic (Pad 6)     ","Halo (Pad 7)         ","Sweep (Pad 8)        ","Rain (FX 1)          ","Sound Track (FX 2)   ",
-                   "Crystal (FX 3)       ","Atmosphere (FX 4)    ","Brightness (FX 5)    ","Goblins (FX 6)       ","Echoes (FX 7)        ","Sci-fi (FX 8)        ","Sitar                ",
-                   "Banjo                ","Shamisen             ","Koto                 ","Kalimba              ","Bag Pipe             ","Fiddle               ","Shanai               ",
-                   "Tinkle Bell          ","Agogo                ","Pitched Percussion   ","Woodblock            ","Taiko Drum           ","Melodic Tom          ","Synth Drum           ",
-                   "Reverse Cymbal       ","Guitar Fret Noise    ","Breath Noise         ","Seashore             ","Bird Tweet           ","Telephone Ring       ","Helicopter           ",
-                   "Applause             ","Gunshot              "};
+String Sounds[] = {"Ac.Gr.Piano","Br.Ac.Piano","El.Gr.Piano","Ho.To.Piano","Elec.Piano1","Elec.Piano2","Harpsichord",
+                   "Clavi      ","Celesta    ","Glock.Spiel","Music Box  ","Vibraphone ","Marimba    ","Xylophone  ",
+                   "Tub.Bells  ","Dulcimer   ","Dr.BarOrgan","Perc.Organ ","Rock Organ ","ChurchOrgan","Reed Organ ",
+                   "Accordion  ","Harmonica  ","TangoAccor.","Ac.GuitarNy","Ac.GuitarSt","El.GuitarJa","El.GuitarCl",
+                   "El.GuitarMu","OverdGuitar","Dist.Guitar","GuitarHarmo","Ac.Bass    ","El.BassFing","El.BassPick",
+                   "Fretl.Bass ","Slap Bass 1","Slap Bass 2","Synth Bass1","Synth Bass2","Violin     ","Viola      ",
+                   "Cello      ","Contrabass ","Tre.Strings","Piz.Strings","Orch.Harp  ","Timpani    ","Str.Ens.1  ",
+                   "Str.Ens.2  ","Syn.String1","Syn.String2","Choir Aahs ","Voice Oohs ","Synth Voice","Orch.Hit   ",
+                   "Trumpet    ","Trombone   ","Tuba       ","Mut.Trumpet","French Horn","BrasSection","SynthBrass1",
+                   "SynthBrass2","Soprano Sax","Alto Sax   ","Tenor Sax  ","BaritoneSax","Oboe       ","EnglishHorn",
+                   "Bassoon    ","Clarinet   ","Piccolo    ","Flute      ","Recorder   ","Pan Flute  ","BlownBottle",
+                   "Shakuhachi ","Whistle    ","Ocarina    ","Square Lead","Saw Lead   ","CalliopLead","Chiff Lead ",
+                   "CharangLead","Voice Lead ","Fifths Lead","Bass + Lead","New Age    ","Warm Pad   ","Polysynth  ",
+                   "Choir      ","Bowed      ","Metallic   ","Halo       ","Sweep      ","Rain       ","Sound Track",
+                   "Crystal    ","Atmosphere ","Brightness ","Goblins    ","Echoes     ","Sci-fi     ","Sitar      ",
+                   "Banjo      ","Shamisen   ","Koto       ","Kalimba    ","Bag Pipe   ","Fiddle     ","Shanai     ",
+                   "Tinkle Bell","Agogo      ","PitchedPerc","Woodblock  ","Taiko Drum ","Melodic Tom","Synth Drum ",
+                   "Rev.Cymbal ","GuiFretNois","BreathNoise","Seashore   ","Bird Tweet ","Teleph.Ring","Helicopter ",
+                   "Applause   ","Gunshot    "};
 
 // *** button declaraions
 Button ButtPat[] = {
@@ -123,6 +123,8 @@ Button NoteLen[] = {
   Button(320, 208, 35, 20,  " 1"),
 };
 
+Button InstPlus         = Button(460, 163, 20, 20, "+");
+Button InstMinus        = Button(365, 163, 20, 20, "-");
 Button Rewind           = Button(0, 280, 30, 35, "<<");
 Button StartStopButton  = Button(35, 280, 80, 35, "Start/Stop");
 Button LoopButton       = Button(365, 295, 55, 25, "Loop");
@@ -135,8 +137,8 @@ Button SaveButton       = Button(425, 235, 55, 25,  "SV");
 Button TempMinusButton  = Button(365, 205, 55, 25,  "--");
 Button TempPlusButton   = Button(425, 205, 55, 25,  "++");
 Button Setup            = Button(325, 3, 115, 20,  "Setup");
-Button ScrollUp         = Button(320, 220, 55, 25, "Up");
-Button ScrollDown       = Button(380, 220, 55, 25, "Dn");
+Button OctaveUp         = Button(320, 148, 35, 25, "Up");
+Button OctaveDown       = Button(320, 178, 35, 25, "Dn");
 Button BackButton       = Button(380, 270, 55, 40, "Back");
 Button SaveSetup        = Button(320, 270, 55, 40, "Save");
 Button ScreenCalibrate  = Button(40, 40, 400, 40,  "Screen Calibrate");
@@ -164,22 +166,24 @@ Button keys[] =
   Button (TFT_WHITE, 26)
 };
 // *** variable
-int potRead1, potRead2, potRead3, val, rX[8], rY[8];
+int potRead1, potRead2, potRead3, val, rX[8], rY[8], Sound[3];
 int32_t clx, crx, cty, cby;
 float px, py;
 bool pressed;
 unsigned long buttonColor[] = {TFT_BLACK, TFT_RED, TFT_MAGENTA, TFT_YELLOW, TFT_CYAN, TFT_GREEN};
 byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack, noteLen;
 bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
-unsigned short instrument[4][13][17], bassSound = 32, leadSound = 1;
+unsigned short instrument[4][13][17];
 unsigned short instNoteLen[4][13][16][16];
+short octave[3];
 unsigned long instNoteOff[4][13][16];
 unsigned short interval = 200, rotInterval = 600, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, slope3, touched;
 unsigned short tick, tempo = 120;
-unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46}, {47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58}};
+unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}};
 unsigned long color;
 unsigned long currentMillis, previousMillis, currTime, prevTime;
 String printInst;
+String noteName[] = {"- C","-#C","- D","-#D","- E","-#E","- F","- G","-#G","- A","-#A","- B"};
 
 void setup()  {
   /*
@@ -239,11 +243,11 @@ void setup()  {
   talkMIDI(0xB9, 0x07, Vol[2]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB8, 0, 0x00); //Default bank GM1
-  talkMIDI(0xC8, bassSound, 0); //Set instrument number. 0xC8 is a 1 data byte command
+  talkMIDI(0xC8, Sound[1], 0); //Set instrument number. 0xC8 is a 1 data byte command
   talkMIDI(0xB8, 0x07, Vol[1]);//0x07 is channel message, set channel volume to near max (127)
 
   talkMIDI(0xB7, 0, 0x00); //Default bank GM1
-  talkMIDI(0xC7, leadSound, 0); //Set instrument number. 0xC7 is a 1 data byte command
+  talkMIDI(0xC7, Sound[2], 0); //Set instrument number. 0xC7 is a 1 data byte command
   talkMIDI(0xB7, 0x07, Vol[0]);//0x07 is channel message, set channel volume to near max (127)
 
   // *** display begin
@@ -268,7 +272,10 @@ void setup()  {
   drumPlay = true;
   loopLen = 1;
   noteLen = 1;
-
+  Sound[1] = 32;
+  Sound[2] = 1;
+  octave[1] = 36;
+  octave[2] = 48;
   // *** scheduler begin
   Scheduler.startLoop(readTouch);
 }
@@ -318,23 +325,20 @@ void playNotes() {
   }
   drawRec();
   for (slope = 0; slope < 12; slope++) {
-    if((instNoteOff[0][slope][pat] >> tick) & (1)||(instNoteOff[0][slope][pat] >> 16 + tick) & (1)){
-      noteOff(9, instSet[0][slope], 0);
-    }
     if (drumPlay && (instrument[0][slope][pat] >> tick) & (1)) {
       noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
     if((instNoteOff[1][slope][pat] >> tick) & (1)||(instNoteOff[1][slope][pat] >> 16 + tick) & (1)){
-      noteOff(8, instSet[1][slope], 0);
+      noteOff(8, instSet[1][slope] + octave[1], 0);
     }
     if (bassPlay && (instrument[1][slope][pat] >> tick) & (1)) {
-      noteOn(8, instSet[1][slope], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
+      noteOn(8, instSet[1][slope] + octave[1], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
     }
     if((instNoteOff[2][slope][pat] >> tick) & (1)||(instNoteOff[2][slope][pat] >> 16 + tick) & (1)){
-      noteOff(7, instSet[2][slope], 0);
+      noteOff(7, instSet[2][slope] + octave[2], 0);
     }
     if (leadPlay && (instrument[2][slope][pat] >> tick) & (1)) {
-      noteOn(7, instSet[2][slope], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
+      noteOn(7, instSet[2][slope] + octave[2], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
     }
   }
   tick += 1;

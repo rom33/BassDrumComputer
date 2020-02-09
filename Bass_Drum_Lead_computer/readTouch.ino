@@ -24,14 +24,6 @@ void readTouch() {
       GetTouchPoints;
       xx = map(tp.x, TS_MINX, TS_MAXX, 480, 0);
       yy = map(tp.y, TS_MINY, TS_MAXY, 320, 0);
-      // *** note length touched?
-      for (slope = 1; slope < 6; slope++) {
-        if (NoteLen[slope].contains(xx, yy)) {
-          NoteLen[noteLen].draw(tft, buttonColor[noteLen]);
-          NoteLen[slope].draw(tft, buttonColor[0]);
-          noteLen = slope;
-        }
-      }
       // *** setup touched?
       /*    if (Setup.contains(x,y)){
             goSetup();
@@ -39,8 +31,7 @@ void readTouch() {
             return;
           }*/
       // *** save touched?
-      if (SaveButton.contains(xx, yy))
-      {
+      if (SaveButton.contains(xx, yy)) {
         savePat();
         SaveButton.draw(tft, buttonColor[0]);
         touched = 6;
@@ -50,6 +41,7 @@ void readTouch() {
       if (LoopButton.contains(xx, yy)) {
         loopMode = !loopMode;
         LoopButton.draw(tft, buttonColor[!loopMode]);
+        return;
       }
       // *** loop len touched?
       if (LoopLen[0].contains(xx, yy)) {
@@ -57,6 +49,7 @@ void readTouch() {
         if (loopLen > 3)loopLen = 1;
         LoopLen[loopLen - 1].draw(tft, buttonColor[0]);
         touched = 16;
+        return;
       }
       // *** clear touched?
       if (ClearButton.contains(xx, yy)) {
@@ -75,23 +68,22 @@ void readTouch() {
           instrument[instSelect][slope][16] = 0;
         }
         touched = 12;
+        return;
       }
       // *** copy touched?
-      if (CopyButton.contains(xx, yy))
-      {
+      if (CopyButton.contains(xx, yy)) {
         CopyButton.draw(tft, buttonColor[0]);
         copyPat = pat;
         return;
       }
       // *** paste touched?
-      if (PasteButton.contains(xx, yy))
-      {
+      if (PasteButton.contains(xx, yy)) {
         for (slope = 0; slope < 13; slope++) {
           instrument[instSelect][slope][nextPat] = instrument[instSelect][slope][copyPat];
           for (slope2 = 0; slope2 < 16; slope2++) {
             instNoteLen[instSelect][slope][nextPat][slope2] = instNoteLen[instSelect][slope][copyPat][slope2];
-            }
-          }        
+          }
+        }
         drawPattern();
         PasteButton.draw(tft, buttonColor[0]);
         touched = 13;
@@ -127,16 +119,15 @@ void readTouch() {
         tool = ((instrument[instSelect][note][pat] >> stp) & (1));
         instrument[instSelect][note][pat] = ((1 << stp) ^ (instrument[instSelect][note][pat]));
         if (instNoteLen[instSelect][note][pat][stp] > 0) {
-          switchNoteLen(instNoteLen[instSelect][note][pat][stp],note,pat);
+          switchNoteLen(instNoteLen[instSelect][note][pat][stp], note, pat);
         }
         instNoteLen[instSelect][note][pat][stp] = noteLen;
-        switchNoteLen(noteLen,note,pat);
+        switchNoteLen(noteLen, note, pat);
         DRAW(buttonColor[noteLen]);
         return;
       }
       // *** note key touch?
-      for (slope = 0; slope < 12; slope++)//play note
-      {
+      for (slope = 0; slope < 12; slope++) {
         if (keys[slope].contains (xx, yy)) {
           noteOn(9 - instSelect, instSet[instSelect][slope], 60);
           return;
@@ -149,16 +140,15 @@ void readTouch() {
         return;
       }
       // **** rewind button?
-      if (Rewind.contains(xx, yy))
-      {
+      if (Rewind.contains(xx, yy)) {
         Rewind.draw(tft, buttonColor[0]);
         touched = 9;
         if (tick > 0) {
           stp = tick - 1;
           tick = 0;
           drawRec();
-          return;
         }
+        return;
       }
       // *** pattern select
       if (toggle == 0) {
@@ -195,6 +185,7 @@ void readTouch() {
             ButtInstPlay[slope].draw(tft, buttonColor[0]);
             playtrack = slope + 1;
             toggle = 3;
+            return;
           }
         }
       }
@@ -203,18 +194,83 @@ void readTouch() {
         if (ButtInst[slope].contains (xx, yy)) {
           instSelectOld = instSelect;
           instSelect = slope;
+          if (instSelect == 0) {
+            NoteLen[noteLen].draw(tft, buttonColor[1]);
+            NoteLen[1].draw(tft, buttonColor[0]);
+          }
           if (instSelect != instSelectOld) {
             ButtInst[instSelect].draw(tft, buttonColor[0]);
             ButtInst[instSelectOld].draw(tft, buttonColor[1]);
-              for (slope = 0; slope < 13; slope++) {
-                if(instSelect == 0 ? printInst = drumSounds[instSet[0][slope]-27] : printInst="");
-                keys[slope].drawKey(tft, printInst);
-              }
+            for (slope = 0; slope < 12; slope++) {
+              if (instSelect == 0 ? printInst = drumSounds[instSet[0][slope] - 27] : printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope]);
+              keys[slope].drawKey(tft, printInst);
+            }
+            if (instSelect == 0) {
+              tft.fillRect(388, 170, 66, 8, TFT_BLUE);
+            }else {
+              tft.setCursor(388, 170);
+              tft.print(Sounds[Sound[instSelect]]);
+            }
+            if (instSelect == 2) {
+              tft.setCursor(388, 170);
+              tft.print(Sounds[Sound[2]]);
+            }
             DrawOrNot();
           }
           return;
         }
       }
+      if (instSelect > 0) {
+        // *** note length touched?
+        for (slope = 1; slope < 6; slope++) {
+          if (NoteLen[slope].contains(xx, yy)) {
+            NoteLen[noteLen].draw(tft, buttonColor[noteLen]);
+            NoteLen[slope].draw(tft, buttonColor[0]);
+            noteLen = slope;
+            return;
+          }
+        }
+        if (OctaveUp.contains (xx, yy)) {
+          octave[instSelect] += 12;
+          if (octave[instSelect] > 120) octave[instSelect] = 120;
+          OctaveUp.draw(tft, buttonColor[0]);
+          for (slope = 0; slope < 12; slope++) {
+            printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope];
+            keys[slope].drawKey(tft, printInst);
+          }
+          touched = 14;
+          return;
+        }
+        if (OctaveDown.contains (xx, yy)) {
+          octave[instSelect] -= 12;
+          if (octave[instSelect] < 0) octave[instSelect] = 0;
+          OctaveDown.draw(tft, buttonColor[0]);
+          for (slope = 0; slope < 12; slope++) {
+            printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope];
+            keys[slope].drawKey(tft, printInst);
+          }
+          touched = 15;
+          return;
+        }
+      }
+    if (InstPlus.contains (xx, yy)) {
+      touched = 1;
+      InstPlus.draw(tft, buttonColor[0]);
+      Sound[instSelect] +=1;
+      if(Sound[instSelect] > 127) Sound[instSelect] = 127;
+      tft.setCursor(388, 170);
+      tft.print(Sounds[Sound[instSelect]]); 
+      talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);    
+    }
+    if (InstMinus.contains (xx, yy)) {
+      touched = 2;
+      InstMinus.draw(tft, buttonColor[0]);
+      Sound[instSelect] -=1;
+      if(Sound[instSelect] < 0) Sound[instSelect] = 0;
+      tft.setCursor(388, 170);
+      tft.print(Sounds[Sound[instSelect]]);
+      talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);
+    }
     }// end of touch
   }
   yield();
@@ -223,6 +279,12 @@ void buttonReverse() {
   if (touched > 0)
   {
     switch (touched) {
+      case 1:
+        InstPlus.draw(tft, buttonColor[1]);
+        break;
+      case 2:
+        InstMinus.draw(tft, buttonColor[1]);
+        break;
       case 6:
         SaveButton.draw(tft, buttonColor[1]);
         break;
@@ -243,10 +305,10 @@ void buttonReverse() {
         PasteButton.draw(tft, buttonColor[1]);
         break;
       case 14:
-        ScrollUp.draw(tft, buttonColor[1]);
+        OctaveUp.draw(tft, buttonColor[1]);
         break;
       case 15:
-        ScrollDown.draw(tft, buttonColor[1]);
+        OctaveDown.draw(tft, buttonColor[1]);
         break;
       case 16:
         LoopLen[loopLen - 1].draw(tft, buttonColor[1]);
