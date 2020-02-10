@@ -129,8 +129,17 @@ void readTouch() {
       // *** note key touch?
       for (slope = 0; slope < 12; slope++) {
         if (keys[slope].contains (xx, yy)) {
-          noteOn(9 - instSelect, instSet[instSelect][slope], 60);
-          return;
+          if (instSelect == 0) {
+            noteOn(9, drumSet[slope], 60);
+            noteTouched = slope;
+            tft.fillRect(388, 170, 66, 8, TFT_BLUE);
+            tft.setCursor(400, 170);
+            tft.print(drumSounds[drumSet[noteTouched] - 27]);
+            return;
+          } else {
+            noteOn(9 - instSelect, octave[instSelect] + slope, 60);
+            return;
+          }
         }
       }
       // *** start stop touched?
@@ -202,12 +211,15 @@ void readTouch() {
             ButtInst[instSelect].draw(tft, buttonColor[0]);
             ButtInst[instSelectOld].draw(tft, buttonColor[1]);
             for (slope = 0; slope < 12; slope++) {
-              if (instSelect == 0 ? printInst = drumSounds[instSet[0][slope] - 27] : printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope]);
+              if (instSelect == 0 ? printInst = drumSounds[drumSet[slope] - 27] : printInst =  octave[instSelect] / 12 + noteName[slope]);
               keys[slope].drawKey(tft, printInst);
             }
             if (instSelect == 0) {
               tft.fillRect(388, 170, 66, 8, TFT_BLUE);
-            }else {
+              tft.setCursor(400, 170);
+              noteTouched = 0;
+              tft.print(drumSounds[drumSet[noteTouched] - 27]);
+            } else {
               tft.setCursor(388, 170);
               tft.print(Sounds[Sound[instSelect]]);
             }
@@ -235,7 +247,7 @@ void readTouch() {
           if (octave[instSelect] > 120) octave[instSelect] = 120;
           OctaveUp.draw(tft, buttonColor[0]);
           for (slope = 0; slope < 12; slope++) {
-            printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope];
+            printInst =  octave[instSelect] / 12 + noteName[slope];
             keys[slope].drawKey(tft, printInst);
           }
           touched = 14;
@@ -246,31 +258,51 @@ void readTouch() {
           if (octave[instSelect] < 0) octave[instSelect] = 0;
           OctaveDown.draw(tft, buttonColor[0]);
           for (slope = 0; slope < 12; slope++) {
-            printInst =  (instSet[instSelect][1] / 12 + octave[instSelect] / 12) + noteName[slope];
+            printInst =  octave[instSelect] / 12 + noteName[slope];
             keys[slope].drawKey(tft, printInst);
           }
           touched = 15;
           return;
         }
       }
-    if (InstPlus.contains (xx, yy)) {
-      touched = 1;
-      InstPlus.draw(tft, buttonColor[0]);
-      Sound[instSelect] +=1;
-      if(Sound[instSelect] > 127) Sound[instSelect] = 127;
-      tft.setCursor(388, 170);
-      tft.print(Sounds[Sound[instSelect]]); 
-      talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);    
-    }
-    if (InstMinus.contains (xx, yy)) {
-      touched = 2;
-      InstMinus.draw(tft, buttonColor[0]);
-      Sound[instSelect] -=1;
-      if(Sound[instSelect] < 0) Sound[instSelect] = 0;
-      tft.setCursor(388, 170);
-      tft.print(Sounds[Sound[instSelect]]);
-      talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);
-    }
+      if (InstPlus.contains (xx, yy)) {
+        touched = 1;
+        InstPlus.draw(tft, buttonColor[0]);
+        if (instSelect > 0) {
+          Sound[instSelect] += 1;
+          if (Sound[instSelect] > 127) Sound[instSelect] = 127;
+          tft.setCursor(388, 170);
+          tft.print(Sounds[Sound[instSelect]]);
+          talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);
+        } else {
+          drumSet[noteTouched] += 1;
+          if (drumSet[noteTouched] - 27 > 60) drumSet[noteTouched] = 60 + 27;
+          tft.fillRect(388, 170, 66, 8, TFT_BLUE);
+          tft.setCursor(400, 170);
+          tft.print(drumSounds[drumSet[noteTouched] - 27]);
+          keys[noteTouched].drawKey(tft, drumSounds[drumSet[noteTouched] - 27]);
+        }
+        return;
+      }
+      if (InstMinus.contains (xx, yy)) {
+        touched = 2;
+        InstMinus.draw(tft, buttonColor[0]);
+        if (instSelect > 0) {
+          Sound[instSelect] -= 1;
+          if (Sound[instSelect] < 0) Sound[instSelect] = 0;
+          tft.setCursor(388, 170);
+          tft.print(Sounds[Sound[instSelect]]);
+          talkMIDI(0xC9 - instSelect, Sound[instSelect], 0);
+        } else {
+          drumSet[noteTouched] -= 1;
+          if (drumSet[noteTouched] - 27 < 0) drumSet[0] = 0 + 27;
+          tft.fillRect(388, 170, 66, 8, TFT_BLUE);
+          tft.setCursor(400, 170);
+          tft.print(drumSounds[drumSet[noteTouched] - 27]);
+          keys[noteTouched].drawKey(tft, drumSounds[drumSet[noteTouched] - 27]);
+        }
+        return;
+      }
     }// end of touch
   }
   yield();

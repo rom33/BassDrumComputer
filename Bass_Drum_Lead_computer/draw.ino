@@ -22,7 +22,7 @@ void patternScreen() {
   // *** draw keys
 
   for (slope = 0; slope < 13; slope++) {
-    keys[slope].drawKey(tft, drumSounds[instSet[0][slope]-27]);
+    keys[slope].drawKey(tft, drumSounds[drumSet[slope] - 27]);
     if (slope < 8) {
       if (slope == 0 || slope == 4 ? color = 0 : color = 1);
       ButtPat[slope].draw(tft, buttonColor[color]);
@@ -34,9 +34,9 @@ void patternScreen() {
   NoteLen[1].draw(tft, buttonColor[0]);
   // *** draw buttons
   InstPlus.draw(tft, buttonColor[1]);
-  InstMinus.draw(tft, buttonColor[1]);  
+  InstMinus.draw(tft, buttonColor[1]);
   OctaveUp.draw(tft, buttonColor[1]);
-  OctaveDown.draw(tft, buttonColor[1]);  
+  OctaveDown.draw(tft, buttonColor[1]);
   Setup.draw(tft, buttonColor[1]);
   StartStopButton.draw(tft, buttonColor[1]);
   Rewind.draw(tft, buttonColor[1]);
@@ -114,6 +114,8 @@ void patternScreen() {
   tft.print("bpm");
   tft.setCursor(400, 195 );
   tft.print(tempo);
+  tft.setCursor(400, 170);
+  tft.print(drumSounds[8]);
 }
 void drawRec() {
   tft.fillRect((stp) * 16 + 7, 254, 14, 17, TFT_BLUE);

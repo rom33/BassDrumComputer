@@ -171,7 +171,7 @@ int32_t clx, crx, cty, cby;
 float px, py;
 bool pressed;
 unsigned long buttonColor[] = {TFT_BLACK, TFT_RED, TFT_MAGENTA, TFT_YELLOW, TFT_CYAN, TFT_GREEN};
-byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack, noteLen;
+byte toggle, patRow1, patRow2, patRow1Old, patRow2Old, instSelect, instSelectOld, loopLen, playtrack, noteLen, noteTouched;
 bool play, tool, loopMode, bassPlay, drumPlay, leadPlay;
 unsigned short instrument[4][13][17];
 unsigned short instNoteLen[4][13][16][16];
@@ -179,7 +179,7 @@ short octave[3];
 unsigned long instNoteOff[4][13][16];
 unsigned short interval = 200, rotInterval = 600, xDraw, yDraw, xx, yy, note, pat, nextPat, copyPat, stp, slope, slope2, slope3, touched;
 unsigned short tick, tempo = 120;
-unsigned short instSet[3][13] = {{35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}};
+unsigned short drumSet[13] = {35, 38, 44, 42, 43, 48, 47, 49, 56, 60, 61, 83};
 unsigned long color;
 unsigned long currentMillis, previousMillis, currTime, prevTime;
 String printInst;
@@ -326,19 +326,19 @@ void playNotes() {
   drawRec();
   for (slope = 0; slope < 12; slope++) {
     if (drumPlay && (instrument[0][slope][pat] >> tick) & (1)) {
-      noteOn(9, instSet[0][slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
+      noteOn(9, drumSet[slope], 40 + (((instrument[0][12][pat] >> tick) & (1)) * 20));
     }
     if((instNoteOff[1][slope][pat] >> tick) & (1)||(instNoteOff[1][slope][pat] >> 16 + tick) & (1)){
-      noteOff(8, instSet[1][slope] + octave[1], 0);
+      noteOff(8, slope + octave[1], 0);
     }
     if (bassPlay && (instrument[1][slope][pat] >> tick) & (1)) {
-      noteOn(8, instSet[1][slope] + octave[1], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
+      noteOn(8, slope + octave[1], 40 + (((instrument[1][12][pat] >> tick) & (1)) * 20));
     }
     if((instNoteOff[2][slope][pat] >> tick) & (1)||(instNoteOff[2][slope][pat] >> 16 + tick) & (1)){
-      noteOff(7, instSet[2][slope] + octave[2], 0);
+      noteOff(7, slope + octave[2], 0);
     }
     if (leadPlay && (instrument[2][slope][pat] >> tick) & (1)) {
-      noteOn(7, instSet[2][slope] + octave[2], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
+      noteOn(7, slope + octave[2], 40 + (((instrument[2][12][pat] >> tick) & (1)) * 20));
     }
   }
   tick += 1;
